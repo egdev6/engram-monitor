@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "composite": true,
+		"skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["vite-plugin-svgr/client", "node"],
+    "outDir": "./dist",
+    "strict": true
+  },
+  "include": ["vite.config.ts", "src/mocks/*.ts", "src/mocks/**/*.json"],
+}

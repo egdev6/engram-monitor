@@ -1,0 +1,39 @@
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+*-workspace
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+/test-results/
+/blob-report/
+
+
+package-lock.json
+pnpm-lock.yaml
+*-workspace
+
+*storybook.log
+
+# Engram persistent memory (local DB is gitignored; manifest + chunks are committed for git sync)
+.engram/engram.db
+
+# Agent Teams local configuration
+.agent-teams/

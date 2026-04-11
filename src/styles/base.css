@@ -1,0 +1,13 @@
+@layer base {
+  body {
+    @apply text-h6-tablet leading-4.5;
+  }
+
+  html {
+    @apply font-primary;
+  }
+
+  #app {
+    @apply overflow-hidden min-h-dvh w-full;
+  }
+}

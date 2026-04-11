@@ -1,0 +1,110 @@
+@theme {
+  /* ── Accent ──────────────────────────────────────────────── */
+  --color-accent:        #ea1889;
+  --color-accent-high:   #f7a8d4;
+  --color-accent-mid:    #c2126f;
+  --color-accent-low:    #2d0e1e;
+
+  /* ── Dark surfaces & text ────────────────────────────────── */
+  --color-background-dark: #090910;
+  --color-text-dark:       #e4e4f0;
+  --color-secondary-dark:  #8080a0;
+  --gradient-background-dark: linear-gradient(130deg, #090910 0%, #111120 50%, #090910 100%);
+
+  /* Dark gray scale (cool-tinted)
+     100 = lightest (near-white),  900 = darkest (near-black) */
+  --color-gray-dark-100: #e4e4f0;
+  --color-gray-dark-200: #c4c4d8;
+  --color-gray-dark-300: #8080a0;
+  --color-gray-dark-400: #3e3e58;
+  --color-gray-dark-500: #2a2a3e;
+  --color-gray-dark-600: #1c1c2a;
+  --color-gray-dark-700: #161622;
+  --color-gray-dark-800: #111120;
+  --color-gray-dark-900: #090910;
+
+  /* ── Light surfaces & text (kept for completeness) ────────── */
+  --color-background-light: #f5f5f9;
+  --color-text-light:       #18191e;
+  --color-secondary-light:  #8080a0;
+  --gradient-background-light: linear-gradient(130deg, #d4d4e0 0%, #e4e4f0 50%, #d4d4e0 100%);
+
+  --color-gray-light-100: #f9f9fb;
+  --color-gray-light-200: #f1f1f5;
+  --color-gray-light-300: #e4e4f0;
+  --color-gray-light-400: #c4c4d8;
+  --color-gray-light-500: #a0a0b8;
+  --color-gray-light-600: #8080a0;
+  --color-gray-light-700: #606080;
+  --color-gray-light-800: #3e3e58;
+  --color-gray-light-900: #1c1c2a;
+
+  /* ── Shadows (accent-tinted) ─────────────────────────────── */
+  --shadow-custom-sm: 0px 0px 16px -1px rgba(234, 24, 137, 0.4);
+  --shadow-custom-md: 0px 0px 16px  4px rgba(234, 24, 137, 0.4);
+  --shadow-custom-lg: 0px 0px 30px 10px rgba(234, 24, 137, 0.4);
+
+  /* ── Semantic colors ─────────────────────────────────────── */
+  --color-orange:       #f97316;
+  --color-orange-light: #fda65c;
+  --color-orange-dark:  #d94e08;
+  --color-yellow:       #eab308;
+  --color-yellow-light: #fde047;
+  --color-yellow-dark:  #b58903;
+  --color-green:        #22c55e;
+  --color-green-light:  #5ee78b;
+  --color-green-dark:   #138a3d;
+  --color-teal:         #14b8a6;
+  --color-teal-light:   #40dfcb;
+  --color-teal-dark:    #0a7f74;
+  --color-blue:         #3b82f6;
+  --color-blue-light:   #7bb0fa;
+  --color-blue-dark:    #1e4ed8;
+  --color-indigo:       #6366f1;
+  --color-indigo-light: #9ca3fa;
+  --color-indigo-dark:  #4338ca;
+  --color-purple:       #8b5cf6;
+  --color-purple-light: #c4b5fd;
+  --color-purple-dark:  #6d28d9;
+  --color-pink:         #ec4899;
+  --color-pink-light:   #fda4cf;
+  --color-pink-dark:    #be185d;
+
+  /* ── Spacing ─────────────────────────────────────────────── */
+  --spacing-xxs: 0.25rem;
+  --spacing-xs:  0.5rem;
+  --spacing-sm:  0.75rem;
+  --spacing-md:  1rem;
+  --spacing-lg:  1.5rem;
+  --spacing-xl:  2rem;
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-primary:   'Geist', system-ui, sans-serif;
+  --font-secondary: 'Geist', system-ui, sans-serif;
+  --font-mono:      'Geist Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+
+  --text-h1: 3rem;
+  --text-h2: 2.5rem;
+  --text-h3: 2rem;
+  --text-h4: 1.6rem;
+  --text-h5: 1.3rem;
+  --text-h6: 1.2rem;
+  --text-base: 1rem;
+  --text-small: 0.8rem;
+  --text-h1-tablet: 2.4rem;
+  --text-h2-tablet: 2rem;
+  --text-h3-tablet: 1.8rem;
+  --text-h4-tablet: 1.4rem;
+  --text-h5-tablet: 1.2rem;
+  --text-h6-tablet: 1rem;
+  --text-base-tablet: 0.875rem;
+  --text-small-tablet: 0.7rem;
+
+  /* ── Animations ──────────────────────────────────────────── */
+  --animate-fadeIn: fadeIn 400ms ease-in-out;
+  --animate-fadeOut: fadeOut 400ms ease-in-out;
+  --animate-rotation-360-reverse: rotation-360 1s linear infinite reverse;
+  --animate-rotation-360: rotation-360 1s linear infinite;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
