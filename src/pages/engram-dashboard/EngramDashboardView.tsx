@@ -3,10 +3,11 @@ import { TabBar } from '@molecules/tab-bar';
 import { SessionsTab } from '@organisms/sessions-tab';
 import { MemoriesTab } from '@organisms/memories-tab';
 import { PromptsTab } from '@organisms/prompts-tab';
+import { EmptySessionsTab } from '@organisms/empty-sessions-tab';
 import { type FC, useMemo, useState } from 'react';
 import type { EngramDashboardViewProps } from './types';
 
-type Tab = 'sessions' | 'memories' | 'prompts';
+type Tab = 'sessions' | 'memories' | 'prompts' | 'empty';
 
 export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
   observations,
@@ -33,10 +34,10 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
     const projects      = Array.from(new Set(sessions.map((s) => s.project).filter(Boolean)));
     const emptySessions = sessionSummaries.filter((s) => s.observation_count === 0);
     return {
+      projects:    projects.length,
       sessions:    sessions.length,
       observations: totalObs,
       prompts:     prompts.length,
-      projects:    projects.length,
       empty:       emptySessions.length,
       allProjects: projects,
     };
@@ -46,6 +47,7 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
     { id: 'sessions' as Tab, label: 'Sessions', count: derivedStats.sessions },
     { id: 'memories' as Tab, label: 'Memories', count: derivedStats.observations },
     { id: 'prompts'  as Tab, label: 'Prompts',  count: derivedStats.prompts },
+    { id: 'empty'    as Tab, label: 'Empty',    count: derivedStats.empty },
   ];
 
   return (
@@ -53,10 +55,10 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
 
       {/* Stats */}
       <div className='grid grid-cols-2 sm:grid-cols-5 gap-2'>
+        <StatCard label='Projects'     value={derivedStats.projects}     loading={isLoadingSessions} />
         <StatCard label='Sessions'     value={derivedStats.sessions}     loading={isLoadingSessions} />
         <StatCard label='Observations' value={derivedStats.observations} loading={isLoadingSessions} accent />
         <StatCard label='Prompts'      value={derivedStats.prompts}      loading={isLoadingPrompts} />
-        <StatCard label='Projects'     value={derivedStats.projects}     loading={isLoadingSessions} />
         <StatCard label='Empty'        value={derivedStats.empty}        loading={isLoadingSessions} />
       </div>
 
@@ -67,11 +69,8 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
       {tab === 'sessions' && (
         <SessionsTab
           sessions={sessions}
-          sessionSummaries={sessionSummaries}
           loading={isLoadingSessions}
           allProjects={derivedStats.allProjects}
-          onDeleteEmptySession={onDeleteSession}
-          isDeletingSession={isDeletingSession}
         />
       )}
       {tab === 'memories' && (
@@ -89,6 +88,14 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
           loading={isLoadingPrompts}
           onDelete={onDeletePrompt}
           isDeleting={isDeletingPrompt}
+        />
+      )}
+      {tab === 'empty' && (
+        <EmptySessionsTab
+          sessionSummaries={sessionSummaries}
+          loading={isLoadingSessions}
+          onDelete={onDeleteSession}
+          isDeleting={isDeletingSession}
         />
       )}
     </div>

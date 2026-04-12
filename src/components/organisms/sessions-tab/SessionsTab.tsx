@@ -1,23 +1,17 @@
 import { cn } from '@helpers/utils';
-import { timeAgo } from '@helpers/time';
 import { KNOWN_TYPES, INPUT_CLS } from '@constants/engram-types';
 import { SearchInput } from '@atoms/search-input';
 import { FilterSelect } from '@atoms/filter-select';
 import { EmptyState } from '@atoms/empty-state';
-import { IconButton } from '@atoms/icon-button';
 import { ClearFiltersBar } from '@molecules/clear-filters-bar';
 import { SessionCard } from '@organisms/session-card';
-import { Trash2, Folder, Clock, Ghost } from 'lucide-react';
 import { type FC, useMemo, useState } from 'react';
 import type { SessionsTabProps } from './types';
 
 const SessionsTab: FC<SessionsTabProps> = ({
   sessions,
-  sessionSummaries,
   loading,
   allProjects,
-  onDeleteEmptySession,
-  isDeletingSession,
 }) => {
   const [search, setSearch] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
@@ -50,13 +44,6 @@ const SessionsTab: FC<SessionsTabProps> = ({
     }
     return result;
   }, [sessions, projectFilter, typeFilter, dateFrom, dateTo, search]);
-
-  // Empty sessions: from backend summaries, no observations, not already in derived sessions
-  const derivedIds = useMemo(() => new Set(sessions.map((s) => s.sessionId)), [sessions]);
-  const emptySessions = useMemo(
-    () => sessionSummaries.filter((s) => s.observation_count === 0 && !derivedIds.has(s.id)),
-    [sessionSummaries, derivedIds],
-  );
 
   if (loading && sessions.length === 0) {
     return (
@@ -160,56 +147,6 @@ const SessionsTab: FC<SessionsTabProps> = ({
           {filtered.map((s) => (
             <SessionCard key={s.sessionId} session={s} allProjects={allProjects} />
           ))}
-        </div>
-      )}
-
-      {/* ── Empty sessions section ── */}
-      {emptySessions.length > 0 && (
-        <div className='mt-6 flex flex-col gap-3'>
-          <div className='flex items-center gap-2'>
-            <Ghost size={14} className='text-gray-light-500 dark:text-gray-dark-300' />
-            <span className='text-[10px] font-mono uppercase tracking-widest text-gray-light-500 dark:text-gray-dark-300'>
-              Empty sessions ({emptySessions.length})
-            </span>
-          </div>
-
-          <div className='flex flex-col gap-2'>
-            {emptySessions.map((s) => (
-              <div
-                key={s.id}
-                className='group flex items-center gap-3 rounded-lg border px-4 py-3
-                           bg-gray-light-100 dark:bg-gray-dark-800
-                           border-gray-light-300 dark:border-gray-dark-700
-                           hover:border-accent/30 transition-colors'
-              >
-                <div className='flex-1 min-w-0 flex items-center gap-4'>
-                  <span className='text-xs font-mono text-text-light dark:text-text-dark truncate max-w-[260px]'>
-                    {s.id}
-                  </span>
-                  {s.project && (
-                    <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-600 dark:text-gray-dark-300 truncate'>
-                      <Folder size={10} className='shrink-0' />
-                      <span className='truncate'>{s.project}</span>
-                    </span>
-                  )}
-                  <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300 shrink-0'>
-                    <Clock size={10} />
-                    {timeAgo(s.started_at)}
-                  </span>
-                </div>
-
-                <IconButton
-                  icon={Trash2}
-                  size={14}
-                  label='Delete empty session'
-                  disabled={isDeletingSession}
-                  onClick={() => onDeleteEmptySession(s.id)}
-                  className='opacity-0 group-hover:opacity-100 shrink-0
-                             hover:text-red-500 dark:hover:text-red-400 disabled:opacity-40'
-                />
-              </div>
-            ))}
-          </div>
         </div>
       )}
     </>
