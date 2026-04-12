@@ -13,6 +13,7 @@
     "analyze": "vite build --mode production --reportCompressedSize",
     "clean": "node -e \"if (process.platform === 'win32') { require('child_process').execSync('pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean.ps1', {stdio: 'inherit'}); } else { require('child_process').execSync('rm -rf dist node_modules pnpm-lock.yaml package-lock.json && npm cache clean --force', {stdio: 'inherit'}); }\"",
     "reinstall": "pnpm run clean && pnpm install",
+    "prepare": "lefthook install",
     "biome-all": "biome check --write .",
     "biome-staged": "biome check . --write --staged --verbose",
     "pre-commit": "pnpm run biome-staged && tsc && git add -A"
