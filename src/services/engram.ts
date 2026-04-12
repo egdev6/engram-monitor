@@ -3,8 +3,10 @@ import type {
   EngramContext,
   EngramHealth,
   EngramObservation,
+  EngramPrompt,
   EngramSearchParams,
   EngramSession,
+  EngramSessionSummary,
   EngramStats
 } from '@models/engram';
 
@@ -121,5 +123,31 @@ export const engramService = {
     const ids = await engramService.collectAllIds();
     await Promise.allSettled(ids.map((id) => engramService.deleteObservation(id)));
     return ids.length;
-  }
+  },
+
+  /** Fetches ALL sessions from the backend (includes empty ones). */
+  recentSessions: async (limit = 500): Promise<EngramSessionSummary[]> => {
+    const { data } = await engramApi.get<EngramSessionSummary[]>('/sessions/recent', {
+      params: { limit }
+    });
+    return data ?? [];
+  },
+
+  /** Fetches recent prompts from the backend. */
+  recentPrompts: async (limit = 200): Promise<EngramPrompt[]> => {
+    const { data } = await engramApi.get<EngramPrompt[]>('/prompts/recent', {
+      params: { limit }
+    });
+    return data ?? [];
+  },
+
+  /** Hard-deletes a session (only succeeds if it has no observations). */
+  deleteSession: async (id: string): Promise<void> => {
+    await engramApi.delete(`/sessions/${encodeURIComponent(id)}`);
+  },
+
+  /** Hard-deletes a single prompt by ID. */
+  deletePrompt: async (id: number): Promise<void> => {
+    await engramApi.delete(`/prompts/${id}`);
+  },
 };

@@ -1,2 +1,13 @@
-export { useEngramHealth, useEngramStats, useEngramSearch, useEngramContext, useEngramSessions, useEngramReset } from './hook';
+export {
+  useEngramHealth,
+  useEngramStats,
+  useEngramSearch,
+  useEngramContext,
+  useEngramSessions,
+  useEngramReset,
+  useEngramSessionSummaries,
+  useEngramPrompts,
+  useDeleteSession,
+  useDeletePrompt,
+} from './hook';
 export type { EngramFilters } from './types';

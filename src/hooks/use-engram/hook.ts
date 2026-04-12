@@ -74,3 +74,45 @@ export const useEngramReset = () => {
     }
   });
 };
+
+/** All sessions from the backend — including empty ones (observation_count = 0). */
+export const useEngramSessionSummaries = () =>
+  useQuery({
+    queryKey: ['engram', 'session-summaries'],
+    queryFn: () => engramService.recentSessions(),
+    refetchInterval: POLL_INTERVAL,
+    placeholderData: (prev) => prev
+  });
+
+/** Recent prompts. */
+export const useEngramPrompts = () =>
+  useQuery({
+    queryKey: ['engram', 'prompts'],
+    queryFn: () => engramService.recentPrompts(),
+    refetchInterval: POLL_INTERVAL,
+    placeholderData: (prev) => prev
+  });
+
+/** Delete a single session (only works if observation_count = 0). */
+export const useDeleteSession = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => engramService.deleteSession(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['engram', 'session-summaries'] });
+      queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
+    },
+  });
+};
+
+/** Delete a single prompt by ID. */
+export const useDeletePrompt = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => engramService.deletePrompt(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['engram', 'prompts'] });
+      queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
+    },
+  });
+};

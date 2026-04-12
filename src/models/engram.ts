@@ -68,3 +68,22 @@ export interface EngramSearchParams {
   scope?: EngramScope;
   limit?: number;
 }
+
+/** Mirrors store.SessionSummary from the Go backend. */
+export interface EngramSessionSummary {
+  id: string;
+  project: string;
+  started_at: string;
+  ended_at?: string | null;
+  summary?: string | null;
+  observation_count: number;
+}
+
+/** Mirrors store.Prompt from the Go backend. */
+export interface EngramPrompt {
+  id: number;
+  session_id: string;
+  content: string;
+  project: string;
+  created_at: string;
+}
