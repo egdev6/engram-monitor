@@ -21,10 +21,10 @@ const Header: FC = () => {
 
   return (
     <header className='w-full h-15 sm:h-20 py-0 px-6 sm:px-12 flex items-center justify-between fixed top-0 left-0 right-0 z-9 backdrop-blur-[10px]'>
-      <div className='flex gap-4 items-end'>
+      <div className='flex gap-4 items-center sm:items-end'>
         <div className='flex items-center gap-3'>
-          <img src='/images/logo-only.svg' alt='Engram logo' className='w-6 h-6 sm:w-8 sm:h-8 mb-0.5' />
-          <h1 className='text-h3 leading-none font-primary font-bold text-text-light dark:text-text-dark'>Engram Monitor</h1>
+          <img src='/images/logo-only.svg' alt='Engram logo' className='min-w-8 min-h-8 mb-0.5' />
+          <h1 className='text-h3 leading-none font-primary font-bold text-text-light dark:text-text-dark hidden sm:flex'>Engram Monitor</h1>
         </div>
         <p className='text-[12px] text-gray-light-600 dark:text-gray-dark-300 font-mono'>
           {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : 'polling every 2 s'}
