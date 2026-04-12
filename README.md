@@ -60,6 +60,7 @@ A single-page dashboard for monitoring and exploring observations stored by the 
 - **Node.js** `>=20` (use `nvm use` if you have an `.nvmrc`)
 - **pnpm** `>=9` — `npm install -g pnpm`
 - **Engram** running locally on `http://127.0.0.1:7437`
+  - >= v1.12.0
   - The dev script will attempt to start Engram automatically if it is not already running
   - Install Engram: `go install github.com/egdev6/engram@latest` (or see its own README)
 
