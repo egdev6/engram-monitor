@@ -44,9 +44,7 @@ export const engramService = {
   allObservations: async (): Promise<EngramObservation[]> => {
     const results = await Promise.allSettled(
       BROAD_TERMS.map((q) =>
-        engramApi
-          .get<EngramObservation[] | null>('/search', { params: { q, limit: 1000 } })
-          .then((r) => r.data ?? [])
+        engramApi.get<EngramObservation[] | null>('/search', { params: { q, limit: 1000 } }).then((r) => r.data ?? [])
       )
     );
     const seen = new Set<number>();
@@ -80,19 +78,26 @@ export const engramService = {
         const sorted = [...data.obs].sort((a, b) => a.created_at.localeCompare(b.created_at));
         const dateMatch = sessionId.match(/-(\d{8})-/);
         const agentName = dateMatch
-          ? sessionId.substring(0, dateMatch.index!)
-          : sessionId.startsWith('manual-save-') ? 'manual' : sessionId;
-        const date = sorted.at(-1)!.created_at;
-        const latestTitle = sorted.at(-1)!.title;
+          ? sessionId.substring(0, dateMatch.index ?? 0)
+          : sessionId.startsWith('manual-save-')
+            ? 'manual'
+            : sessionId;
+        const date = sorted.at(-1)?.created_at ?? '';
+        const latestTitle = sorted.at(-1)?.title ?? '';
         // Derive unique types (preserve insertion order, limit noise)
         const types = Array.from(new Set(sorted.map((o) => o.type)));
         // Pick first non-null topic_key as the representative one
         const topicKey = sorted.find((o) => o.topic_key)?.topic_key ?? undefined;
         return {
-          sessionId, agentName, project: data.project, date,
-          observationCount: sorted.length, latestTitle,
-          types, topicKey,
-          observations: sorted,
+          sessionId,
+          agentName,
+          project: data.project,
+          date,
+          observationCount: sorted.length,
+          latestTitle,
+          types,
+          topicKey,
+          observations: sorted
         };
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -102,9 +107,7 @@ export const engramService = {
   collectAllIds: async (): Promise<number[]> => {
     const results = await Promise.allSettled(
       BROAD_TERMS.map((q) =>
-        engramApi
-          .get<EngramObservation[] | null>('/search', { params: { q, limit: 1000 } })
-          .then((r) => r.data ?? [])
+        engramApi.get<EngramObservation[] | null>('/search', { params: { q, limit: 1000 } }).then((r) => r.data ?? [])
       )
     );
     const ids = new Set<number>();
@@ -149,5 +152,5 @@ export const engramService = {
   /** Hard-deletes a single prompt by ID. */
   deletePrompt: async (id: number): Promise<void> => {
     await engramApi.delete(`/prompts/${id}`);
-  },
+  }
 };

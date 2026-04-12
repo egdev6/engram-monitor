@@ -2,31 +2,21 @@ import { EmptyState } from '@atoms/empty-state';
 import { IconButton } from '@atoms/icon-button';
 import { SearchInput } from '@atoms/search-input';
 import { timeAgo } from '@helpers/time';
-import { Trash2, Folder, Clock } from 'lucide-react';
+import { Clock, Folder, Trash2 } from 'lucide-react';
 import { type FC, useMemo, useState } from 'react';
 import type { EmptySessionsTabProps } from './types';
 
-const EmptySessionsTab: FC<EmptySessionsTabProps> = ({
-  sessionSummaries,
-  loading,
-  onDelete,
-  isDeleting,
-}) => {
+const EmptySessionsTab: FC<EmptySessionsTabProps> = ({ sessionSummaries, loading, onDelete, isDeleting }) => {
   const [search, setSearch] = useState('');
 
-  const emptySessions = useMemo(
-    () => sessionSummaries.filter((s) => s.observation_count === 0),
-    [sessionSummaries],
-  );
+  const emptySessions = useMemo(() => sessionSummaries.filter((s) => s.observation_count === 0), [sessionSummaries]);
 
   const filtered = useMemo(() => {
-    if (!search) return emptySessions;
+    if (!search) {
+      return emptySessions;
+    }
     const q = search.toLowerCase();
-    return emptySessions.filter(
-      (s) =>
-        s.id.toLowerCase().includes(q) ||
-        s.project.toLowerCase().includes(q),
-    );
+    return emptySessions.filter((s) => s.id.toLowerCase().includes(q) || s.project.toLowerCase().includes(q));
   }, [emptySessions, search]);
 
   if (loading && emptySessions.length === 0) {
@@ -46,11 +36,7 @@ const EmptySessionsTab: FC<EmptySessionsTabProps> = ({
 
   return (
     <>
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder='Search by session ID or project…'
-      />
+      <SearchInput value={search} onChange={setSearch} placeholder='Search by session ID or project…' />
 
       {filtered.length === 0 ? (
         <EmptyState message={hasActiveFilters ? 'No empty sessions match the search' : 'No empty sessions found'} />

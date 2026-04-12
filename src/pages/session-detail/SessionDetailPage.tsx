@@ -1,5 +1,5 @@
-import { useEngramSessions } from '@hooks/use-engram';
 import { BackButton } from '@atoms/back-button';
+import { useEngramSessions } from '@hooks/use-engram';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SessionDetailView } from './SessionDetailView';
@@ -9,15 +9,9 @@ const SessionDetailPage = () => {
   const navigate = useNavigate();
   const { data: sessions = [], isLoading } = useEngramSessions();
 
-  const session = useMemo(
-    () => sessions.find((s) => s.sessionId === sessionId),
-    [sessions, sessionId],
-  );
+  const session = useMemo(() => sessions.find((s) => s.sessionId === sessionId), [sessions, sessionId]);
 
-  const allProjects = useMemo(
-    () => [...new Set(sessions.map((s) => s.project))].filter(Boolean).sort(),
-    [sessions],
-  );
+  const allProjects = useMemo(() => [...new Set(sessions.map((s) => s.project))].filter(Boolean).sort(), [sessions]);
 
   const handleBack = () => navigate('/');
 
@@ -36,21 +30,13 @@ const SessionDetailPage = () => {
   if (!session) {
     return (
       <div className='flex flex-col items-center gap-4 py-20'>
-        <p className='text-[13px] font-mono text-gray-light-600 dark:text-gray-dark-300'>
-          Session not found
-        </p>
+        <p className='text-[13px] font-mono text-gray-light-600 dark:text-gray-dark-300'>Session not found</p>
         <BackButton label='Back to dashboard' onClick={handleBack} />
       </div>
     );
   }
 
-  return (
-    <SessionDetailView
-      session={session}
-      allProjects={allProjects}
-      onBack={handleBack}
-    />
-  );
+  return <SessionDetailView session={session} allProjects={allProjects} onBack={handleBack} />;
 };
 
 export default SessionDetailPage;

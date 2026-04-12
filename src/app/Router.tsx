@@ -1,6 +1,6 @@
 import Layout from '@templates/layout';
-import { Suspense, lazy } from 'react';
-import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
 
 export const EngramDashboardPage = lazy(() => import('@pages/engram-dashboard'));
 export const SessionDetailPage = lazy(() => import('@pages/session-detail'));

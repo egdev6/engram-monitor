@@ -1,31 +1,25 @@
+import { EmptyState } from '@atoms/empty-state';
+import { FilterSelect } from '@atoms/filter-select';
+import { SearchInput } from '@atoms/search-input';
 import { KNOWN_TYPES } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
-import { SearchInput } from '@atoms/search-input';
-import { FilterSelect } from '@atoms/filter-select';
-import { EmptyState } from '@atoms/empty-state';
-import { ObservationRow } from '@molecules/observation-row';
-import { MarkdownPanel } from '@molecules/markdown-panel';
-import { type FC, useState } from 'react';
 import type { EngramObservation } from '@models/engram';
+import { MarkdownPanel } from '@molecules/markdown-panel';
+import { ObservationRow } from '@molecules/observation-row';
+import { type FC, useState } from 'react';
 import type { MemoriesTabProps } from './types';
 
 const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersChange, isLoading, projects }) => {
   const [selected, setSelected] = useState<EngramObservation | null>(null);
 
-  const projectOptions = [
-    { value: '', label: 'All projects' },
-    ...projects.map((p) => ({ value: p, label: p })),
-  ];
+  const projectOptions = [{ value: '', label: 'All projects' }, ...projects.map((p) => ({ value: p, label: p }))];
 
-  const typeOptions = [
-    { value: '', label: 'All' },
-    ...KNOWN_TYPES.map((t) => ({ value: t, label: t })),
-  ];
+  const typeOptions = [{ value: '', label: 'All' }, ...KNOWN_TYPES.map((t) => ({ value: t, label: t }))];
 
   const scopeOptions = [
     { value: '', label: 'All' },
     { value: 'project', label: 'project' },
-    { value: 'personal', label: 'personal' },
+    { value: 'personal', label: 'personal' }
   ];
 
   const limitOptions = [20, 50, 100].map((n) => ({ value: String(n), label: String(n) }));
@@ -128,23 +122,22 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
 
       {/* ── List ── */}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-3 items-start'>
-        {isLoading && observations.length === 0
-          ? Array.from({ length: 6 }, (_, i) => `sk-${i}`).map((k) => (
-              <div
-                key={k}
-                className={cn(
-                  'h-20 rounded-lg animate-pulse border',
-                  'bg-gray-light-200 dark:bg-gray-dark-800',
-                  'border-gray-light-300 dark:border-gray-dark-700',
-                )}
-              />
-            ))
-          : observations.length === 0
-            ? <EmptyState message='No memories found' />
-            : observations.map((obs) => (
-                <ObservationRow key={obs.id} observation={obs} onClick={setSelected} />
-              ))
-        }
+        {isLoading && observations.length === 0 ? (
+          Array.from({ length: 6 }, (_, i) => `sk-${i}`).map((k) => (
+            <div
+              key={k}
+              className={cn(
+                'h-20 rounded-lg animate-pulse border',
+                'bg-gray-light-200 dark:bg-gray-dark-800',
+                'border-gray-light-300 dark:border-gray-dark-700'
+              )}
+            />
+          ))
+        ) : observations.length === 0 ? (
+          <EmptyState message='No memories found' />
+        ) : (
+          observations.map((obs) => <ObservationRow key={obs.id} observation={obs} onClick={setSelected} />)
+        )}
       </div>
 
       {selected && <MarkdownPanel observation={selected} onClose={() => setSelected(null)} />}

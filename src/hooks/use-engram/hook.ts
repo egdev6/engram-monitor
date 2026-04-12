@@ -1,6 +1,6 @@
+import { engramService } from '@services/engram';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { engramService } from '@services/engram';
 import type { EngramFilters } from './types';
 
 const POLL_INTERVAL = 2_000;
@@ -101,7 +101,7 @@ export const useDeleteSession = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['engram', 'session-summaries'] });
       queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
-    },
+    }
   });
 };
 
@@ -113,6 +113,6 @@ export const useDeletePrompt = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['engram', 'prompts'] });
       queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
-    },
+    }
   });
 };

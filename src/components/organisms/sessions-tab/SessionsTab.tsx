@@ -1,18 +1,14 @@
-import { cn } from '@helpers/utils';
-import { KNOWN_TYPES, INPUT_CLS } from '@constants/engram-types';
-import { SearchInput } from '@atoms/search-input';
-import { FilterSelect } from '@atoms/filter-select';
 import { EmptyState } from '@atoms/empty-state';
+import { FilterSelect } from '@atoms/filter-select';
+import { SearchInput } from '@atoms/search-input';
+import { INPUT_CLS, KNOWN_TYPES } from '@constants/engram-types';
+import { cn } from '@helpers/utils';
 import { ClearFiltersBar } from '@molecules/clear-filters-bar';
 import { SessionCard } from '@organisms/session-card';
 import { type FC, useMemo, useState } from 'react';
 import type { SessionsTabProps } from './types';
 
-const SessionsTab: FC<SessionsTabProps> = ({
-  sessions,
-  loading,
-  allProjects,
-}) => {
+const SessionsTab: FC<SessionsTabProps> = ({ sessions, loading, allProjects }) => {
   const [search, setSearch] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -22,8 +18,12 @@ const SessionsTab: FC<SessionsTabProps> = ({
   // Sessions with observations (derived from allObservations)
   const filtered = useMemo(() => {
     let result = sessions;
-    if (projectFilter) result = result.filter((s) => s.project === projectFilter);
-    if (typeFilter)    result = result.filter((s) => s.types.includes(typeFilter));
+    if (projectFilter) {
+      result = result.filter((s) => s.project === projectFilter);
+    }
+    if (typeFilter) {
+      result = result.filter((s) => s.types.includes(typeFilter));
+    }
     if (dateFrom) {
       const from = new Date(dateFrom).getTime();
       result = result.filter((s) => new Date(s.date).getTime() >= from);
@@ -34,12 +34,13 @@ const SessionsTab: FC<SessionsTabProps> = ({
     }
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter((s) =>
-        s.agentName.toLowerCase().includes(q) ||
-        s.project.toLowerCase().includes(q) ||
-        s.latestTitle.toLowerCase().includes(q) ||
-        (s.topicKey?.toLowerCase().includes(q) ?? false) ||
-        s.sessionId.toLowerCase().includes(q),
+      result = result.filter(
+        (s) =>
+          s.agentName.toLowerCase().includes(q) ||
+          s.project.toLowerCase().includes(q) ||
+          s.latestTitle.toLowerCase().includes(q) ||
+          (s.topicKey?.toLowerCase().includes(q) ?? false) ||
+          s.sessionId.toLowerCase().includes(q)
       );
     }
     return result;
@@ -60,39 +61,19 @@ const SessionsTab: FC<SessionsTabProps> = ({
 
   const hasActiveFilters = search || projectFilter || typeFilter || dateFrom || dateTo;
 
-  const projectOptions = [
-    { value: '', label: 'All projects' },
-    ...allProjects.map((p) => ({ value: p, label: p })),
-  ];
+  const projectOptions = [{ value: '', label: 'All projects' }, ...allProjects.map((p) => ({ value: p, label: p }))];
 
-  const typeOptions = [
-    { value: '', label: 'All types' },
-    ...KNOWN_TYPES.map((t) => ({ value: t, label: t })),
-  ];
+  const typeOptions = [{ value: '', label: 'All types' }, ...KNOWN_TYPES.map((t) => ({ value: t, label: t }))];
 
   return (
     <>
       {/* ── Filter bar ── */}
       <div className='flex flex-col gap-3 pb-1'>
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder='Search by agent, project, topic, title…'
-        />
+        <SearchInput value={search} onChange={setSearch} placeholder='Search by agent, project, topic, title…' />
 
         <div className='flex items-center gap-3 flex-wrap'>
-          <FilterSelect
-            label='project'
-            value={projectFilter}
-            onChange={setProjectFilter}
-            options={projectOptions}
-          />
-          <FilterSelect
-            label='type'
-            value={typeFilter}
-            onChange={setTypeFilter}
-            options={typeOptions}
-          />
+          <FilterSelect label='project' value={projectFilter} onChange={setProjectFilter} options={projectOptions} />
+          <FilterSelect label='type' value={typeFilter} onChange={setTypeFilter} options={typeOptions} />
 
           {/* Date range */}
           <div className='flex items-center gap-1.5'>

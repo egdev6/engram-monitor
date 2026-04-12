@@ -10,7 +10,7 @@ const IconButton: FC<IconButtonProps> = ({ icon: Icon, size = 16, label, classNa
       'shrink-0 transition-colors',
       'text-gray-light-600 dark:text-gray-dark-300',
       'hover:text-text-light dark:hover:text-text-dark',
-      className,
+      className
     )}
     {...props}
   >

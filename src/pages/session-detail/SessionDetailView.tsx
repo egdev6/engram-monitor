@@ -1,13 +1,13 @@
-import { SearchInput } from '@atoms/search-input';
-import { FilterSelect } from '@atoms/filter-select';
 import { BackButton } from '@atoms/back-button';
 import { EmptyState } from '@atoms/empty-state';
-import { ObservationRow } from '@molecules/observation-row';
-import { MarkdownPanel } from '@molecules/markdown-panel';
+import { FilterSelect } from '@atoms/filter-select';
+import { SearchInput } from '@atoms/search-input';
+import type { EngramObservation } from '@models/engram';
 import { ClearFiltersBar } from '@molecules/clear-filters-bar';
+import { MarkdownPanel } from '@molecules/markdown-panel';
+import { ObservationRow } from '@molecules/observation-row';
 import { SessionDetailCard } from '@organisms/session-detail-card';
 import { type FC, useMemo, useState } from 'react';
-import type { EngramObservation } from '@models/engram';
 import type { SessionDetailViewProps } from './types';
 
 export const SessionDetailView: FC<SessionDetailViewProps> = ({ session: s, allProjects, onBack }) => {
@@ -17,32 +17,28 @@ export const SessionDetailView: FC<SessionDetailViewProps> = ({ session: s, allP
 
   const filtered = useMemo(() => {
     let result = s.observations;
-    if (typeFilter) result = result.filter((o) => o.type === typeFilter);
+    if (typeFilter) {
+      result = result.filter((o) => o.type === typeFilter);
+    }
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter((o) =>
-        o.title.toLowerCase().includes(q) ||
-        o.content.toLowerCase().includes(q) ||
-        (o.topic_key?.toLowerCase().includes(q) ?? false),
+      result = result.filter(
+        (o) =>
+          o.title.toLowerCase().includes(q) ||
+          o.content.toLowerCase().includes(q) ||
+          (o.topic_key?.toLowerCase().includes(q) ?? false)
       );
     }
     return result;
   }, [s.observations, typeFilter, search]);
 
   const hasActiveFilters = search || typeFilter;
-  const uniqueTypes = useMemo(
-    () => [...new Set(s.observations.map((o) => o.type))],
-    [s.observations],
-  );
+  const uniqueTypes = useMemo(() => [...new Set(s.observations.map((o) => o.type))], [s.observations]);
 
-  const typeOptions = [
-    { value: '', label: 'All types' },
-    ...uniqueTypes.map((t) => ({ value: t, label: t })),
-  ];
+  const typeOptions = [{ value: '', label: 'All types' }, ...uniqueTypes.map((t) => ({ value: t, label: t }))];
 
   return (
     <div className='w-full max-w-275 flex flex-col gap-5'>
-
       {/* ── Back + breadcrumb ── */}
       <div className='flex items-center gap-3'>
         <BackButton onClick={onBack} />
@@ -77,7 +73,10 @@ export const SessionDetailView: FC<SessionDetailViewProps> = ({ session: s, allP
                 shown={filtered.length}
                 total={s.observations.length}
                 label='observations'
-                onClear={() => { setSearch(''); setTypeFilter(''); }}
+                onClear={() => {
+                  setSearch('');
+                  setTypeFilter('');
+                }}
               />
             </div>
           )}
@@ -85,16 +84,17 @@ export const SessionDetailView: FC<SessionDetailViewProps> = ({ session: s, allP
       </div>
 
       {/* ── Observations list ── */}
-      {filtered.length === 0
-        ? <EmptyState message={hasActiveFilters ? 'No observations match the current filters' : 'No observations found'} />
-        : (
-          <div className='flex flex-col gap-1.5'>
-            {filtered.map((obs) => (
-              <ObservationRow key={obs.id} observation={obs} onClick={setSelected} showTime />
-            ))}
-          </div>
-        )
-      }
+      {filtered.length === 0 ? (
+        <EmptyState
+          message={hasActiveFilters ? 'No observations match the current filters' : 'No observations found'}
+        />
+      ) : (
+        <div className='flex flex-col gap-1.5'>
+          {filtered.map((obs) => (
+            <ObservationRow key={obs.id} observation={obs} onClick={setSelected} showTime={true} />
+          ))}
+        </div>
+      )}
 
       {selected && <MarkdownPanel observation={selected} onClose={() => setSelected(null)} />}
     </div>

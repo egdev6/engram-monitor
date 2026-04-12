@@ -1,7 +1,7 @@
-import { cn } from '@helpers/utils';
-import { timeAgo, projectColor } from '@helpers/time';
 import { TypeBadge } from '@atoms/type-badge';
-import { Bot, Folder, Tag, Layers } from 'lucide-react';
+import { projectColor, timeAgo } from '@helpers/time';
+import { cn } from '@helpers/utils';
+import { Bot, Folder, Layers, Tag } from 'lucide-react';
 import type { FC } from 'react';
 import type { SessionDetailCardProps } from './types';
 
@@ -10,7 +10,7 @@ const SessionDetailCard: FC<SessionDetailCardProps> = ({ session: s, allProjects
     className={cn(
       'rounded-lg border px-5 py-4 flex flex-col gap-3',
       'bg-gray-light-100 dark:bg-gray-dark-800',
-      'border-gray-light-300 dark:border-gray-dark-700',
+      'border-gray-light-300 dark:border-gray-dark-700'
     )}
   >
     {/* Row 1: agent + project + obs count */}
@@ -22,7 +22,7 @@ const SessionDetailCard: FC<SessionDetailCardProps> = ({ session: s, allProjects
       <span
         className={cn(
           'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border min-w-0 max-w-[40%]',
-          projectColor(s.project, allProjects),
+          projectColor(s.project, allProjects)
         )}
       >
         <Folder size={9} className='shrink-0' />
@@ -42,7 +42,9 @@ const SessionDetailCard: FC<SessionDetailCardProps> = ({ session: s, allProjects
     {/* Row 3: type badges */}
     {s.types.length > 0 && (
       <div className='flex items-center gap-1.5 flex-wrap'>
-        {s.types.map((t) => <TypeBadge key={t} type={t} />)}
+        {s.types.map((t) => (
+          <TypeBadge key={t} type={t} />
+        ))}
       </div>
     )}
 
@@ -55,9 +57,7 @@ const SessionDetailCard: FC<SessionDetailCardProps> = ({ session: s, allProjects
     )}
 
     {/* Row 5: session id */}
-    <p className='text-[10px] font-mono text-gray-light-400 dark:text-gray-dark-300 truncate'>
-      {s.sessionId}
-    </p>
+    <p className='text-[10px] font-mono text-gray-light-400 dark:text-gray-dark-300 truncate'>{s.sessionId}</p>
   </div>
 );
 

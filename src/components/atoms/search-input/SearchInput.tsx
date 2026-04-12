@@ -1,5 +1,5 @@
-import { cn } from '@helpers/utils';
 import { INPUT_CLS } from '@constants/engram-types';
+import { cn } from '@helpers/utils';
 import { Search, X } from 'lucide-react';
 import type { FC } from 'react';
 import type { SearchInputProps } from './types';

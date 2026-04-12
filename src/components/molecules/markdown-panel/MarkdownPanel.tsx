@@ -1,7 +1,7 @@
-import { cn } from '@helpers/utils';
-import { TypeBadge } from '@atoms/type-badge';
 import { IconButton } from '@atoms/icon-button';
-import { Tag, Shield, X, FolderOpen } from 'lucide-react';
+import { TypeBadge } from '@atoms/type-badge';
+import { cn } from '@helpers/utils';
+import { FolderOpen, Shield, Tag, X } from 'lucide-react';
 import { marked } from 'marked';
 import { type FC, useEffect, useRef } from 'react';
 import type { MarkdownPanelProps } from './types';
@@ -17,7 +17,9 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: obs, onClose }) =>
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -31,15 +33,13 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: obs, onClose }) =>
           'fixed top-0 right-0 z-50 h-full w-full max-w-160',
           'bg-background-light dark:bg-background-dark',
           'border-l border-gray-light-300 dark:border-gray-dark-700',
-          'flex flex-col shadow-xl overflow-hidden',
+          'flex flex-col shadow-xl overflow-hidden'
         )}
       >
         {/* Header */}
         <div className='flex items-start justify-between gap-4 px-6 py-4 border-b border-gray-light-300 dark:border-gray-dark-700'>
           <div className='flex flex-col gap-1.5 min-w-0'>
-            <h2 className='text-sm font-semibold text-text-light dark:text-text-dark leading-snug'>
-              {obs.title}
-            </h2>
+            <h2 className='text-sm font-semibold text-text-light dark:text-text-dark leading-snug'>{obs.title}</h2>
             <div className='flex items-center gap-2 flex-wrap'>
               <TypeBadge type={obs.type} />
               {obs.project && (

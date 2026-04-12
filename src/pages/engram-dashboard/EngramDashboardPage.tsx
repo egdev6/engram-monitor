@@ -1,16 +1,16 @@
+import type { EngramFilters } from '@hooks/use-engram';
 import {
+  useDeletePrompt,
+  useDeleteSession,
+  useEngramPrompts,
   useEngramReset,
   useEngramSearch,
-  useEngramSessions,
   useEngramSessionSummaries,
-  useEngramPrompts,
-  useDeleteSession,
-  useDeletePrompt,
+  useEngramSessions
 } from '@hooks/use-engram';
-import type { EngramFilters } from '@hooks/use-engram';
-import { useState } from 'react';
-import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { useState } from 'react';
 import { EngramDashboardView } from './EngramDashboardView';
 
 const DEFAULT_FILTERS: EngramFilters = {
@@ -26,13 +26,13 @@ const EngramDashboardPage = () => {
   const [filters, setFilters] = useState<EngramFilters>(DEFAULT_FILTERS);
   const queryClient = useQueryClient();
 
-  const { data: observations = [], isLoading: isLoadingObs }        = useEngramSearch(filters);
-  const { data: sessions = [], isLoading: isLoadingSessions }        = useEngramSessions();
-  const { data: sessionSummaries = [] }                              = useEngramSessionSummaries();
-  const { data: prompts = [], isLoading: isLoadingPrompts }          = useEngramPrompts();
-  const resetMutation      = useEngramReset();
-  const deleteSessionMut   = useDeleteSession();
-  const deletePromptMut    = useDeletePrompt();
+  const { data: observations = [], isLoading: isLoadingObs } = useEngramSearch(filters);
+  const { data: sessions = [], isLoading: isLoadingSessions } = useEngramSessions();
+  const { data: sessionSummaries = [] } = useEngramSessionSummaries();
+  const { data: prompts = [], isLoading: isLoadingPrompts } = useEngramPrompts();
+  const resetMutation = useEngramReset();
+  const deleteSessionMut = useDeleteSession();
+  const deletePromptMut = useDeletePrompt();
 
   const handleFiltersChange = (partial: Partial<EngramFilters>) => {
     setFilters((prev) => ({ ...prev, ...partial }));
@@ -46,14 +46,20 @@ const EngramDashboardPage = () => {
   };
 
   const handleDeleteSession = (id: string) => {
-    if (!window.confirm(`¿Eliminar la sesión "${id}"? Esta acción no se puede deshacer.`)) return;
+    if (!window.confirm(`¿Eliminar la sesión "${id}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
     deleteSessionMut.mutate(id, {
       onError: (err) => {
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 409) {
-            setTimeout(() => window.alert(
-              `No se puede eliminar la sesión "${id}" porque todavía tiene observaciones asociadas.\n\nElimina primero todas sus observaciones e intenta de nuevo.`,
-            ), 0);
+            setTimeout(
+              () =>
+                window.alert(
+                  `No se puede eliminar la sesión "${id}" porque todavía tiene observaciones asociadas.\n\nElimina primero todas sus observaciones e intenta de nuevo.`
+                ),
+              0
+            );
           } else if (err.response?.status === 404) {
             queryClient.invalidateQueries({ queryKey: ['engram', 'session-summaries'] });
             queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
@@ -62,7 +68,7 @@ const EngramDashboardPage = () => {
             setTimeout(() => window.alert(`Error al eliminar la sesión: ${err.message}`), 0);
           }
         }
-      },
+      }
     });
   };
 
@@ -78,7 +84,7 @@ const EngramDashboardPage = () => {
             setTimeout(() => window.alert(`Error al eliminar el prompt #${id}: ${err.message}`), 0);
           }
         }
-      },
+      }
     });
   };
 

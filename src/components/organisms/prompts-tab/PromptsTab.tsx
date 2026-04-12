@@ -1,9 +1,9 @@
-import { SearchInput } from '@atoms/search-input';
 import { EmptyState } from '@atoms/empty-state';
 import { IconButton } from '@atoms/icon-button';
-import { ClearFiltersBar } from '@molecules/clear-filters-bar';
+import { SearchInput } from '@atoms/search-input';
 import { timeAgo } from '@helpers/time';
-import { Trash2, Clock, Folder, Link } from 'lucide-react';
+import { ClearFiltersBar } from '@molecules/clear-filters-bar';
+import { Clock, Folder, Link, Trash2 } from 'lucide-react';
 import { type FC, useMemo, useState } from 'react';
 import type { PromptsTabProps } from './types';
 
@@ -11,13 +11,15 @@ const PromptsTab: FC<PromptsTabProps> = ({ prompts, loading, onDelete, isDeletin
   const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    if (!search) return prompts;
+    if (!search) {
+      return prompts;
+    }
     const q = search.toLowerCase();
     return prompts.filter(
       (p) =>
         p.content.toLowerCase().includes(q) ||
         p.project.toLowerCase().includes(q) ||
-        p.session_id.toLowerCase().includes(q),
+        p.session_id.toLowerCase().includes(q)
     );
   }, [prompts, search]);
 
@@ -40,11 +42,7 @@ const PromptsTab: FC<PromptsTabProps> = ({ prompts, loading, onDelete, isDeletin
     <>
       {/* ── Filter bar ── */}
       <div className='flex flex-col gap-3 pb-1'>
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder='Search prompts by content, project, session…'
-        />
+        <SearchInput value={search} onChange={setSearch} placeholder='Search prompts by content, project, session…' />
 
         {hasActiveFilters && (
           <ClearFiltersBar

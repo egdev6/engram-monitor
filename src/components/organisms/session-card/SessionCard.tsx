@@ -1,7 +1,7 @@
-import { cn } from '@helpers/utils';
-import { timeAgo, projectColor } from '@helpers/time';
 import { TypeBadge } from '@atoms/type-badge';
-import { Tag, Layers, Bot, Folder } from 'lucide-react';
+import { projectColor, timeAgo } from '@helpers/time';
+import { cn } from '@helpers/utils';
+import { Bot, Folder, Layers, Tag } from 'lucide-react';
 import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { SessionCardProps } from './types';
@@ -16,7 +16,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
         'w-full h-full rounded-lg border px-4 py-4 flex flex-col justify-between gap-3 text-left transition-colors',
         'bg-gray-light-100 dark:bg-gray-dark-800',
         'border-gray-light-300 dark:border-gray-dark-700',
-        'hover:border-accent/40 hover:bg-gray-light-200 dark:hover:bg-gray-dark-700',
+        'hover:border-accent/40 hover:bg-gray-light-200 dark:hover:bg-gray-dark-700'
       )}
     >
       {/* ── Top section ── */}
@@ -30,7 +30,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
           <span
             className={cn(
               'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border min-w-0 max-w-[40%]',
-              projectColor(s.project, allProjects),
+              projectColor(s.project, allProjects)
             )}
           >
             <Folder size={9} className='shrink-0' />
@@ -42,9 +42,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
         <p
           className={cn(
             'text-[13px] font-mono leading-snug line-clamp-2',
-            s.latestTitle
-              ? 'text-text-light dark:text-text-dark'
-              : 'text-gray-light-400 dark:text-gray-dark-300 italic',
+            s.latestTitle ? 'text-text-light dark:text-text-dark' : 'text-gray-light-400 dark:text-gray-dark-300 italic'
           )}
         >
           {s.latestTitle || 'no title'}
@@ -53,7 +51,9 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
         {/* Row 3: type badges */}
         {s.types.length > 0 && (
           <div className='flex items-center gap-1 flex-wrap'>
-            {s.types.slice(0, 4).map((t) => <TypeBadge key={t} type={t} />)}
+            {s.types.slice(0, 4).map((t) => (
+              <TypeBadge key={t} type={t} />
+            ))}
             {s.types.length > 4 && (
               <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
                 +{s.types.length - 4}
@@ -67,15 +67,14 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
       <div className='flex flex-col gap-1.5'>
         {/* topic_key */}
         <p className='text-[10px] font-mono truncate text-gray-light-500 dark:text-gray-dark-300'>
-          {s.topicKey
-            ? (
-              <span className='inline-flex items-center gap-1'>
-                <Tag size={9} className='text-gray-light-400 dark:text-gray-dark-300 shrink-0' />
-                {s.topicKey}
-              </span>
-            )
-            : <span className='text-gray-light-300 dark:text-gray-dark-700'>—</span>
-          }
+          {s.topicKey ? (
+            <span className='inline-flex items-center gap-1'>
+              <Tag size={9} className='text-gray-light-400 dark:text-gray-dark-300 shrink-0' />
+              {s.topicKey}
+            </span>
+          ) : (
+            <span className='text-gray-light-300 dark:text-gray-dark-700'>—</span>
+          )}
         </p>
         {/* time + obs count */}
         <div className='flex items-center justify-between gap-2'>
