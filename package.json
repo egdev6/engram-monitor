@@ -15,7 +15,7 @@
     "reinstall": "pnpm run clean && pnpm install",
     "prepare": "lefthook install",
     "biome-all": "biome check --write .",
-    "biome-staged": "biome check . --write --staged --verbose",
+    "biome-staged": "biome check . --write --staged --verbose --files-ignore-unknown=true --no-errors-on-unmatched",
     "pre-commit": "pnpm run biome-staged && tsc && git add -A"
   },
   "dependencies": {

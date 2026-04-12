@@ -59,7 +59,7 @@ A single-page dashboard for monitoring and exploring observations stored by the 
 
 - **Node.js** `>=20` (use `nvm use` if you have an `.nvmrc`)
 - **pnpm** `>=9` — `npm install -g pnpm`
-- **Engram** running locally on `http://127.0.0.1:7437`
+- **Engram** `>= v1.12.0` and running locally on `http://127.0.0.1:7437`
   - The dev script will attempt to start Engram automatically if it is not already running
   - Install Engram: `go install github.com/egdev6/engram@latest` (or see its own README)
 
@@ -232,3 +232,5 @@ src/
 [issues-url]: https://github.com/egdev6/engram-monitor/issues
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/egdev6
+#   T e s t  
+ 
