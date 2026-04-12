@@ -12,7 +12,7 @@
 
 <img src='/public/images/monitor.png'>
 
-A single-page dashboard for monitoring and exploring observations stored by the [Engram](https://github.com/egdev6/engram) memory service. Search, browse, and manage AI agent sessions, observations, and stats from a local Engram HTTP server.
+A single-page dashboard for monitoring and exploring observations stored by the [Engram](https://github.com/egdev6/engram) memory service. Search, browse, and manage AI agent sessions, observations, prompts, and stats from a local Engram HTTP server.
 
 ---
 
@@ -141,15 +141,18 @@ The project follows **Atomic Design** with a container/presentational split for 
 src/
 ├── app/                    # Entry point, router, providers
 ├── components/
-│   ├── atoms/              # TypeBadge, StatCard, SearchInput, FilterSelect
-│   ├── molecules/          # ObservationRow, MarkdownPanel
-│   ├── organisms/          # SessionCard, SessionsTab, MemoriesTab, SessionDetailCard, Header, Footer
+│   ├── atoms/              # BackButton, EmptyState, FilterSelect, IconButton,
+│   │                       # SearchInput, StatCard, Text, TypeBadge
+│   ├── molecules/          # ClearFiltersBar, MarkdownPanel, ObservationRow, TabBar
+│   ├── organisms/          # EmptySessionsTab, Footer, Header, MemoriesTab,
+│   │                       # PromptsTab, SessionCard, SessionDetailCard,
+│   │                       # SessionsTab
 │   └── templates/          # Layout
 ├── config/                 # Axios instances, React Query client
 ├── hooks/                  # use-engram, use-theme, use-loading
 ├── models/                 # TypeScript interfaces for Engram domain types
 ├── pages/
-│   ├── engram-dashboard/   # Main dashboard (Sessions + Memories tabs)
+│   ├── engram-dashboard/   # Main dashboard (Sessions, Memories, Prompts, Empty tabs)
 │   └── session-detail/     # Session drill-down with observation list
 ├── services/               # All Engram API calls (engramService)
 ├── styles/                 # Global CSS: base, theme tokens, fonts, utilities
@@ -161,7 +164,7 @@ src/
 **Key concepts:**
 
 - **API proxy** — Vite proxies `/engram-api` → `http://127.0.0.1:7437` in dev. All calls use the `engramApi` Axios instance.
-- **Session derivation** — Sessions are not a first-class API concept. They are derived client-side by grouping observations by `session_id` and parsing the session ID string for agent name and date.
+- **Session derivation** — Active sessions (with observations) are derived client-side by grouping observations by `session_id`. Empty sessions are fetched directly from the `GET /sessions` endpoint.
 - **Data fetching** — Services wrap raw API calls. Hooks compose services with TanStack Query and expose clean interfaces to components.
 - **Global state** — Zustand for UI state (theme, loading overlay). TanStack Query for all server state.
 
@@ -195,10 +198,12 @@ src/
 
 - **Sessions tab** — grid view of all agent sessions with agent name, project, type badges, latest title, topic key, and date. Filterable by project, type, and date range.
 - **Memories tab** — grid view of individual observations. Filterable by project, type, scope, and limit. Click any row to open a Markdown detail panel.
+- **Prompts tab** — list of saved user prompts with inline search and per-row delete.
+- **Empty sessions tab** — dedicated list of sessions with no observations, with inline search and per-row delete to clean up stale entries.
 - **Session detail** — drill into a session to see all its observations in order, with inline search and type filtering.
 - **Live health indicator** — header shows online/offline status with auto-polling every 2 seconds.
-- **Stats bar** — total observations, sessions, and projects at a glance.
-- **Delete & reset** — delete individual observations or wipe all data via the dashboard controls.
+- **Stats bar** — projects, sessions, observations, prompts, and empty session counts at a glance.
+- **Delete support** — delete individual prompts or empty sessions directly from the dashboard.
 - **Dark theme** — dark-only UI with Geist font and a magenta accent.
 
 </div>
