@@ -116,3 +116,30 @@ export const useDeletePrompt = () => {
     }
   });
 };
+
+/** Export all Engram data as a downloadable JSON file. */
+export const useEngramExport = () =>
+  useMutation({
+    mutationFn: async () => {
+      const blob = await engramService.exportAll();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `engram-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  });
+
+/** Import Engram data from a JSON file. */
+export const useEngramImport = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => engramService.importData(file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['engram'] });
+    }
+  });
+};

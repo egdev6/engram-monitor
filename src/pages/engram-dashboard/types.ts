@@ -18,4 +18,8 @@ export interface EngramDashboardViewProps {
   isDeletingSession: boolean;
   onDeletePrompt: (id: number) => void;
   isDeletingPrompt: boolean;
+  onExport: () => void;
+  isExporting: boolean;
+  onImport: (file: File) => void;
+  isImporting: boolean;
 }
