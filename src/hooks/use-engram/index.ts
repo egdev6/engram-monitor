@@ -8,6 +8,7 @@ export {
   useEngramSearch,
   useEngramSessionSummaries,
   useEngramSessions,
-  useEngramStats
+  useEngramStats,
+  useUpdateObservation
 } from './hook';
 export type { EngramFilters } from './types';
