@@ -30,6 +30,7 @@ export const useTheme = () => {
     }
 
     const root = document.documentElement;
+    root.classList.remove('light', 'dark');
     root.classList.add(themeParsed ? themeParsed : theme);
   }, [theme, setTheme]);
 
