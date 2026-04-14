@@ -40,11 +40,11 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
     const result: TopicGroup[] = [];
     for (const [topicKey, obs] of map) {
       const sorted = [...obs].sort((a, b) => a.created_at.localeCompare(b.created_at));
-      const searchText = [topicKey, ...sorted.map((o) => `${o.title} ${o.content}`)].join(' ').toLowerCase();
+      const searchText = [topicKey, ...sorted.map((o) => o.title)].join(' ').toLowerCase();
       result.push({
         topicKey,
         observations: sorted,
-        projects: Array.from(new Set(sorted.map((o) => o.project))),
+        projects: Array.from(new Set(sorted.map((o) => o.project).filter(Boolean))),
         types: Array.from(new Set(sorted.map((o) => o.type))),
         latestDate: sorted.at(-1)?.created_at ?? '',
         searchText
@@ -113,9 +113,9 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
         <EmptyState message={search || projectFilter ? 'No topics match the current filters' : 'No topic keys found'} />
       ) : (
         <div className='flex flex-col gap-2'>
-          {filtered.map((group, groupIdx) => {
+          {filtered.map((group) => {
             const isOpen = expanded.has(group.topicKey);
-            const panelId = `topic-panel-${groupIdx}`;
+            const panelId = `topic-panel-${encodeURIComponent(group.topicKey)}`;
             return (
               <div
                 key={group.topicKey}
