@@ -9,10 +9,13 @@ function getStoredTheme(): 'light' | 'dark' | undefined {
     const parsed = JSON.parse(raw);
     const value = parsed.state?.theme;
     if (value === 'light' || value === 'dark') return value;
-    // Invalid value — remove so system preference listener can attach
+  } catch {
+    // Malformed JSON or storage unavailable
+  }
+  try {
     localStorage.removeItem('app-theme');
   } catch {
-    localStorage.removeItem('app-theme');
+    // Storage access blocked — ignore
   }
   return undefined;
 }
