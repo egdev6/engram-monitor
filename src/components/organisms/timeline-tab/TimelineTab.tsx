@@ -11,14 +11,15 @@ import { type FC, useMemo, useState } from 'react';
 import type { TimelineTabProps } from './types';
 
 /**
- * Derives a solid bg class from TYPE_COLORS (which use bg-color/20 format).
- * e.g. "bg-blue/20 text-blue border-blue/30" → "bg-blue"
+ * Derives dot color from TYPE_COLORS using bg-current + the existing text-*
+ * class, so Tailwind can statically extract all required classes.
+ * e.g. "bg-blue/20 text-blue border-blue/30" → "bg-current text-blue"
  */
 function getDotColor(type: string): string {
   const colorEntry = TYPE_COLORS[type];
   if (!colorEntry) return 'bg-gray-dark-400';
-  const bgMatch = colorEntry.match(/bg-([^\s/]+)/);
-  return bgMatch ? `bg-${bgMatch[1]}` : 'bg-gray-dark-400';
+  const textMatch = colorEntry.match(/\btext-[^\s]+\b/);
+  return textMatch ? `bg-current ${textMatch[0]}` : 'bg-gray-dark-400';
 }
 
 interface DayGroup {
