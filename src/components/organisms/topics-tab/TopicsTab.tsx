@@ -3,7 +3,7 @@ import { FilterSelect } from '@atoms/filter-select';
 import { SearchInput } from '@atoms/search-input';
 import { TypeBadge } from '@atoms/type-badge';
 import { cn } from '@helpers/utils';
-import type { EngramObservation } from '@models/engram';
+import type { EngramObservation, EngramObservationType } from '@models/engram';
 import { MarkdownPanel } from '@molecules/markdown-panel';
 import { ChevronDown, ChevronRight, FolderOpen, Tag } from 'lucide-react';
 import { type FC, useMemo, useState } from 'react';
@@ -13,8 +13,10 @@ interface TopicGroup {
   topicKey: string;
   observations: EngramObservation[];
   projects: string[];
-  types: string[];
+  types: EngramObservationType[];
   latestDate: string;
+  /** Precomputed lowercase search text for filtering performance. */
+  searchText: string;
 }
 
 const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) => {
@@ -38,12 +40,14 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
     const result: TopicGroup[] = [];
     for (const [topicKey, obs] of map) {
       const sorted = [...obs].sort((a, b) => a.created_at.localeCompare(b.created_at));
+      const searchText = [topicKey, ...sorted.map((o) => `${o.title} ${o.content}`)].join(' ').toLowerCase();
       result.push({
         topicKey,
         observations: sorted,
         projects: Array.from(new Set(sorted.map((o) => o.project))),
         types: Array.from(new Set(sorted.map((o) => o.type))),
-        latestDate: sorted.at(-1)?.created_at ?? ''
+        latestDate: sorted.at(-1)?.created_at ?? '',
+        searchText
       });
     }
 
@@ -57,11 +61,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
     }
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter(
-        (g) =>
-          g.topicKey.toLowerCase().includes(q) ||
-          g.observations.some((o) => o.title.toLowerCase().includes(q) || o.content.toLowerCase().includes(q))
-      );
+      result = result.filter((g) => g.searchText.includes(q));
     }
     return result;
   }, [groups, projectFilter, search]);
@@ -113,9 +113,9 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
         <EmptyState message={search || projectFilter ? 'No topics match the current filters' : 'No topic keys found'} />
       ) : (
         <div className='flex flex-col gap-2'>
-          {filtered.map((group) => {
+          {filtered.map((group, groupIdx) => {
             const isOpen = expanded.has(group.topicKey);
-            const panelId = `topic-panel-${group.topicKey.replace(/[^a-zA-Z0-9-]/g, '-')}`;
+            const panelId = `topic-panel-${groupIdx}`;
             return (
               <div
                 key={group.topicKey}
