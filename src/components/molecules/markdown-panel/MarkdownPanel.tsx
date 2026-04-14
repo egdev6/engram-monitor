@@ -94,6 +94,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (updateMutation.isPending) return;
         if (editing) {
           handleCancel();
         } else {
