@@ -156,19 +156,21 @@ export const engramService = {
 
   /** Exports all Engram data as JSON. */
   exportAll: async (): Promise<Blob> => {
-    const { data } = await engramApi.get('/export', { responseType: 'blob' });
-    return data as Blob;
+    const { data } = await engramApi.get<Blob>('/export', { responseType: 'blob', timeout: 0 });
+    return data;
   },
 
   /** Imports Engram data from a JSON file. */
   importData: async (file: File): Promise<void> => {
     const text = await file.text();
-    let json: unknown;
     try {
-      json = JSON.parse(text);
+      JSON.parse(text);
     } catch {
-      throw new Error('Invalid Engram backup JSON');
+      throw new Error('JSON de respaldo de Engram no válido');
     }
-    await engramApi.post('/import', json);
+    await engramApi.post('/import', text, {
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 60_000
+    });
   }
 };
