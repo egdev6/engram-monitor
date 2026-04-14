@@ -126,7 +126,9 @@ export const useEngramExport = () =>
       try {
         const a = document.createElement('a');
         a.href = url;
-        a.download = `engram-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        const now = new Date();
+        const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        a.download = `engram-backup-${date}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

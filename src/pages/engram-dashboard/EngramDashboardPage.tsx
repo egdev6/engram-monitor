@@ -88,11 +88,11 @@ const EngramDashboardPage = () => {
   const handleImport = (file: File) => {
     importMutation.mutate(file, {
       onSuccess: () => {
-        window.alert('Import completed successfully.');
+        setTimeout(() => window.alert('Import completed successfully.'), 0);
       },
       onError: (err) => {
         const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Unknown error';
-        window.alert(`Import failed: ${message}`);
+        setTimeout(() => window.alert(`Import failed: ${message}`), 0);
       }
     });
   };
