@@ -160,13 +160,9 @@ export const engramService = {
     return data;
   },
 
-  /** Imports Engram data from a JSON file. */
+  /** Imports Engram data from a JSON file. Sends the file directly to avoid doubling memory. */
   importData: async (file: File): Promise<void> => {
-    const text = await file.text();
-    if (!text.trimStart().startsWith('{') && !text.trimStart().startsWith('[')) {
-      throw new Error('Invalid Engram backup file');
-    }
-    await engramApi.post('/import', text, {
+    await engramApi.post('/import', file, {
       headers: { 'Content-Type': 'application/json' },
       timeout: 60_000
     });
