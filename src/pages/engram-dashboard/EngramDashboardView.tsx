@@ -32,9 +32,6 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
 
   const allObservations = useMemo(() => sessions.flatMap((s) => s.observations), [sessions]);
 
-  // ── Stats derived from what the panel actually shows ──────────────────────
-  const allObservations = useMemo(() => sessions.flatMap((s) => s.observations), [sessions]);
-
   const derivedStats = useMemo(() => {
     const totalObs = sessions.reduce((acc, s) => acc + s.observationCount, 0);
     const projects = Array.from(new Set(sessions.map((s) => s.project).filter(Boolean)));
