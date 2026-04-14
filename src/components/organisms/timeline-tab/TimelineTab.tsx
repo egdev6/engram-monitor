@@ -47,7 +47,8 @@ function groupByDay(observations: EngramObservation[]): DayGroup[] {
 
   const now = new Date();
   const today = toLocalDateKey(now.toISOString());
-  const yesterday = toLocalDateKey(new Date(now.getTime() - 86_400_000).toISOString());
+  const yesterdayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  const yesterday = toLocalDateKey(yesterdayDate.toISOString());
 
   return Array.from(map.entries()).map(([date, obs]) => ({
     date,
