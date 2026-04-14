@@ -25,25 +25,34 @@ export const useTheme = () => {
   const setTheme = useThemeStore((state) => state.setTheme);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
-  // Listen for system preference changes when no stored theme
+  // Listen for system preference changes — only respond when no user preference is stored
   useEffect(() => {
-    if (getStoredTheme()) return;
-
     const mql = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
-      setTheme(mql.matches ? 'dark' : 'light');
+      if (!getStoredTheme()) {
+        setTheme(mql.matches ? 'dark' : 'light');
+      }
     };
-    mql.addEventListener('change', handleChange);
+
+    if (!getStoredTheme()) {
+      mql.addEventListener('change', handleChange);
+    }
+
     return () => mql.removeEventListener('change', handleChange);
   }, [setTheme]);
 
-  // Apply theme class to document
+  // Apply theme class to document — use store value as primary, fall back to system preference
   useEffect(() => {
     const stored = getStoredTheme();
-    const effectiveTheme = stored ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const effectiveTheme = stored ?? theme;
 
     if (!stored) {
-      setTheme(effectiveTheme);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const systemTheme = prefersDark ? 'dark' : 'light';
+      if (theme !== systemTheme) {
+        setTheme(systemTheme);
+        return; // Will re-run with updated theme
+      }
     }
 
     const root = document.documentElement;
