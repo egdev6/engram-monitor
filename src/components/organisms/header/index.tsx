@@ -1,14 +1,15 @@
 import { Moon, Sun, Wifi, WifiOff } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 import { cn } from 'tailwind-variants';
-import { useEngramHealth } from '@/hooks/use-engram';
-import { useTheme } from '@/hooks/use-theme/hook';
+import { useEngramHealth } from '@hooks/use-engram';
+import { useThemeStore } from '@hooks/use-theme';
 
 const Header: FC = () => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isOnline, setIsOnline] = useState(false);
   const { data: health } = useEngramHealth();
-  const { theme, toggleTheme } = useTheme();
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
   useEffect(() => {
     if (health?.status === 'ok') {
@@ -39,9 +40,15 @@ const Header: FC = () => {
           type='button'
           onClick={toggleTheme}
           className='flex items-center justify-center w-8 h-8 rounded-full border border-gray-light-300 dark:border-gray-dark-700 text-gray-light-700 dark:text-gray-dark-300 hover:bg-gray-light-200 dark:hover:bg-gray-dark-800 transition-colors cursor-pointer'
-          title={theme === 'dark' ? 'Cambiar a light mode' : 'Cambiar a dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-pressed={theme === 'dark'}
         >
-          {theme === 'dark' ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
+          {theme === 'dark' ? (
+            <Sun size={14} strokeWidth={1.5} aria-hidden='true' />
+          ) : (
+            <Moon size={14} strokeWidth={1.5} aria-hidden='true' />
+          )}
         </button>
         <span
           className={cn(
