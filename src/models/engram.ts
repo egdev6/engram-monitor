@@ -30,6 +30,14 @@ export interface EngramObservation {
   rank?: number;
 }
 
+export interface EngramObservationUpdate {
+  title?: string;
+  content?: string;
+  type?: EngramObservationType;
+  scope?: EngramScope;
+  topic_key?: string | null;
+}
+
 export interface EngramStats {
   total_sessions: number;
   total_observations: number;

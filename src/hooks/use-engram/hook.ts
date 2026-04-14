@@ -1,3 +1,4 @@
+import type { EngramObservationUpdate } from '@models/engram';
 import { engramService } from '@services/engram';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
@@ -100,6 +101,20 @@ export const useDeleteSession = () => {
     mutationFn: (id: string) => engramService.deleteSession(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['engram', 'session-summaries'] });
+      queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
+    }
+  });
+};
+
+/** Update a single observation by ID. */
+export const useUpdateObservation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: EngramObservationUpdate }) =>
+      engramService.updateObservation(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['engram', 'search'] });
+      queryClient.invalidateQueries({ queryKey: ['engram', 'sessions'] });
       queryClient.invalidateQueries({ queryKey: ['engram', 'stats'] });
     }
   });

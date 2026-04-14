@@ -3,6 +3,7 @@ import type {
   EngramContext,
   EngramHealth,
   EngramObservation,
+  EngramObservationUpdate,
   EngramPrompt,
   EngramSearchParams,
   EngramSession,
@@ -38,6 +39,11 @@ export const engramService = {
 
   deleteObservation: async (id: number): Promise<void> => {
     await engramApi.delete(`/observations/${id}`);
+  },
+
+  updateObservation: async (id: number, data: EngramObservationUpdate): Promise<EngramObservation> => {
+    const { data: updated } = await engramApi.patch<EngramObservation>(`/observations/${id}`, data);
+    return updated;
   },
 
   /** Fetches all reachable observations via multiple broad FTS searches and deduplicates. */
