@@ -8,10 +8,8 @@ const Header: FC = () => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isOnline, setIsOnline] = useState(false);
   const { data: health } = useEngramHealth();
-  const { theme, toggleTheme } = useThemeStore((state) => ({
-    theme: state.theme,
-    toggleTheme: state.toggleTheme
-  }));
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
   useEffect(() => {
     if (health?.status === 'ok') {
