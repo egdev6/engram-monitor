@@ -123,13 +123,16 @@ export const useEngramExport = () =>
     mutationFn: async () => {
       const blob = await engramService.exportAll();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `engram-backup-${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 100);
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `engram-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } finally {
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      }
     }
   });
 

@@ -111,7 +111,7 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
         <input
           ref={fileInputRef}
           type='file'
-          accept='.json'
+          accept='.json,application/json'
           className='hidden'
           onChange={(e) => {
             const file = e.target.files?.[0];
