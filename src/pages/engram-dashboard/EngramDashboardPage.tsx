@@ -8,7 +8,8 @@ import {
   useEngramReset,
   useEngramSearch,
   useEngramSessionSummaries,
-  useEngramSessions
+  useEngramSessions,
+  useMergeProjects
 } from '@hooks/use-engram';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -37,6 +38,7 @@ const EngramDashboardPage = () => {
   const deletePromptMut = useDeletePrompt();
   const exportMutation = useEngramExport();
   const importMutation = useEngramImport();
+  const mergeProjectsMut = useMergeProjects();
 
   const handleFiltersChange = (partial: Partial<EngramFilters>) => {
     setFilters((prev) => ({ ...prev, ...partial }));
@@ -97,6 +99,37 @@ const EngramDashboardPage = () => {
     });
   };
 
+  const handleMergeProjects = (from: string, to: string, onSuccess: () => void) => {
+    mergeProjectsMut.mutate(
+      { from, to },
+      {
+        onSuccess: () => {
+          onSuccess();
+          setTimeout(() => window.alert(`Project "${from}" merged into "${to}" successfully.`), 0);
+        },
+        onError: (err) => {
+          let message = 'Merge failed.';
+          if (axios.isAxiosError(err)) {
+            const responseMessage =
+              typeof err.response?.data === 'string'
+                ? err.response.data
+                : typeof err.response?.data?.message === 'string'
+                  ? err.response.data.message
+                  : undefined;
+            if (err.response?.status === 404) {
+              message = responseMessage ?? `Project "${from}" or "${to}" was not found.`;
+            } else {
+              message = responseMessage ?? err.message;
+            }
+          } else if (err instanceof Error) {
+            message = err.message;
+          }
+          setTimeout(() => window.alert(message), 0);
+        }
+      }
+    );
+  };
+
   const handleDeletePrompt = (id: number) => {
     deletePromptMut.mutate(id, {
       onError: (err) => {
@@ -134,6 +167,8 @@ const EngramDashboardPage = () => {
       isExporting={exportMutation.isPending}
       onImport={handleImport}
       isImporting={importMutation.isPending}
+      onMergeProjects={handleMergeProjects}
+      isMergingProjects={mergeProjectsMut.isPending}
     />
   );
 };

@@ -11,6 +11,7 @@ export {
   useEngramSessionSummaries,
   useEngramSessions,
   useEngramStats,
+  useMergeProjects,
   useUpdateObservation
 } from './hook';
 export type { EngramFilters } from './types';

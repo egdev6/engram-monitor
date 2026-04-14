@@ -172,5 +172,10 @@ export const engramService = {
       headers: { 'Content-Type': 'application/json' },
       timeout: 60_000
     });
+  },
+
+  /** Merges all observations from one project into another. */
+  mergeProjects: async (from: string, to: string): Promise<void> => {
+    await engramApi.post('/projects/migrate', { from, to });
   }
 };
