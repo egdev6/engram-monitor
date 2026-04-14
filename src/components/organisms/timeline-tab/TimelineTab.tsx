@@ -2,7 +2,7 @@ import { EmptyState } from '@atoms/empty-state';
 import { FilterSelect } from '@atoms/filter-select';
 import { SearchInput } from '@atoms/search-input';
 import { TypeBadge } from '@atoms/type-badge';
-import { KNOWN_TYPES } from '@constants/engram-types';
+import { KNOWN_TYPES, TYPE_COLORS } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
 import type { EngramObservation } from '@models/engram';
 import { MarkdownPanel } from '@molecules/markdown-panel';
@@ -10,19 +10,16 @@ import { FolderOpen } from 'lucide-react';
 import { type FC, useMemo, useState } from 'react';
 import type { TimelineTabProps } from './types';
 
-/** Maps observation type to a Tailwind bg color for the timeline dot. */
-const DOT_COLORS: Record<string, string> = {
-  pattern: 'bg-blue',
-  decision: 'bg-purple',
-  discovery: 'bg-teal',
-  handoff: 'bg-orange',
-  summary: 'bg-green',
-  prompt: 'bg-pink',
-  bugfix: 'bg-red-400',
-  architecture: 'bg-indigo',
-  config: 'bg-yellow',
-  learning: 'bg-teal'
-};
+/**
+ * Derives a solid bg class from TYPE_COLORS (which use bg-color/20 format).
+ * e.g. "bg-blue/20 text-blue border-blue/30" → "bg-blue"
+ */
+function getDotColor(type: string): string {
+  const colorEntry = TYPE_COLORS[type];
+  if (!colorEntry) return 'bg-gray-dark-400';
+  const bgMatch = colorEntry.match(/bg-([^\s/]+)/);
+  return bgMatch ? `bg-${bgMatch[1]}` : 'bg-gray-dark-400';
+}
 
 interface DayGroup {
   date: string;
@@ -30,19 +27,26 @@ interface DayGroup {
   observations: EngramObservation[];
 }
 
+/** Formats an ISO date string to a local YYYY-MM-DD key. */
+function toLocalDateKey(iso: string): string {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 function groupByDay(observations: EngramObservation[]): DayGroup[] {
   const sorted = [...observations].sort((a, b) => b.created_at.localeCompare(a.created_at));
   const map = new Map<string, EngramObservation[]>();
 
   for (const obs of sorted) {
-    const date = obs.created_at.slice(0, 10);
+    const date = toLocalDateKey(obs.created_at);
     const list = map.get(date) ?? [];
     list.push(obs);
     map.set(date, list);
   }
 
-  const today = new Date().toISOString().slice(0, 10);
-  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+  const now = new Date();
+  const today = toLocalDateKey(now.toISOString());
+  const yesterday = toLocalDateKey(new Date(now.getTime() - 86_400_000).toISOString());
 
   return Array.from(map.entries()).map(([date, obs]) => ({
     date,
@@ -51,8 +55,9 @@ function groupByDay(observations: EngramObservation[]): DayGroup[] {
   }));
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
+function formatDate(dateKey: string): string {
+  const [year, month, day] = dateKey.split('-').map(Number);
+  const d = new Date(year, month - 1, day);
   return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
@@ -145,7 +150,7 @@ const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects 
               {/* Observations for this day */}
               <div className='ml-1.5 border-l-2 border-gray-light-300 dark:border-gray-dark-700 pl-6 flex flex-col gap-0'>
                 {day.observations.map((obs, obsIdx) => {
-                  const dotColor = DOT_COLORS[obs.type] ?? 'bg-gray-dark-400';
+                  const dotColor = getDotColor(obs.type);
                   const isLast = obsIdx === day.observations.length - 1 && dayIdx === days.length - 1;
                   return (
                     <button
@@ -159,7 +164,12 @@ const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects 
                       )}
                     >
                       {/* Dot on the line */}
-                      <div className={cn('w-2.5 h-2.5 rounded-full mt-1 shrink-0 ring-2 ring-background-light dark:ring-background-dark', dotColor)} />
+                      <div
+                        className={cn(
+                          'w-2.5 h-2.5 rounded-full mt-1 shrink-0 ring-2 ring-background-light dark:ring-background-dark',
+                          dotColor
+                        )}
+                      />
 
                       {/* Content */}
                       <div className='flex flex-col gap-1 min-w-0 flex-1'>
