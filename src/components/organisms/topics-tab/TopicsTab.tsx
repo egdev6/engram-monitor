@@ -115,6 +115,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
         <div className='flex flex-col gap-2'>
           {filtered.map((group) => {
             const isOpen = expanded.has(group.topicKey);
+            const panelId = `topic-panel-${group.topicKey.replace(/[^a-zA-Z0-9-]/g, '-')}`;
             return (
               <div
                 key={group.topicKey}
@@ -128,6 +129,8 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
                 <button
                   type='button'
                   onClick={() => toggleExpand(group.topicKey)}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
                   className={cn(
                     'w-full flex items-center gap-3 px-4 py-3 text-left cursor-pointer',
                     'hover:bg-gray-light-200/50 dark:hover:bg-gray-dark-700/50 transition-colors'
@@ -166,7 +169,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
 
                 {/* Expanded observations */}
                 {isOpen && (
-                  <div className='border-t border-gray-light-300 dark:border-gray-dark-700'>
+                  <div id={panelId} className='border-t border-gray-light-300 dark:border-gray-dark-700'>
                     {group.observations.map((obs, i) => (
                       <button
                         key={obs.id}
