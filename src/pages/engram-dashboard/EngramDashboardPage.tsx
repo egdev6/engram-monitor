@@ -77,7 +77,7 @@ const EngramDashboardPage = () => {
   };
 
   const handleExport = () => {
-    exportMutation.mutate(undefined, {
+    exportMutation.mutate({
       onError: (err) => {
         const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Unknown error';
         setTimeout(() => window.alert(`Export failed: ${message}`), 0);
