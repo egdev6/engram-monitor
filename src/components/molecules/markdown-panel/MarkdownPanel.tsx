@@ -6,17 +6,22 @@ import { useUpdateObservation } from '@hooks/use-engram';
 import type { EngramObservation, EngramObservationUpdate, EngramObservationType, EngramScope } from '@models/engram';
 import { Check, FolderOpen, Pencil, Shield, Tag, X } from 'lucide-react';
 import { type MarkedOptions, marked } from 'marked';
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { MarkdownPanelProps } from './types';
 
 const MARKED_OPTIONS: MarkedOptions = { async: false };
 
-// Configure marked to sanitize raw HTML in markdown content
+// Strip raw HTML and sanitize links in markdown content
 marked.use({
   renderer: {
-    html: () => ''
+    html: () => '',
+    link: ({ href, title, text }) => {
+      const safeHref = href && /^https?:\/\//i.test(href) ? href : '#';
+      const titleAttr = title ? ` title="${title}"` : '';
+      return `<a href="${safeHref}"${titleAttr} rel="noopener noreferrer">${text}</a>`;
+    }
   }
 });
-import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { MarkdownPanelProps } from './types';
 
 const BASE_SCOPES: EngramScope[] = ['project', 'personal', 'global'];
 
@@ -51,17 +56,17 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
     return scopes;
   }, [currentObs.scope]);
 
-  // Sync from polling when not editing
+  // Sync from polling — only when initialObs changes and not editing
   useEffect(() => {
-    if (!editing) {
-      setCurrentObs(initialObs);
-      setTitle(initialObs.title);
-      setContent(initialObs.content);
-      setType(initialObs.type);
-      setScope(initialObs.scope);
-      setTopicKey(initialObs.topic_key ?? '');
-    }
-  }, [initialObs, editing]);
+    if (editing) return;
+
+    setCurrentObs(initialObs);
+    setTitle(initialObs.title);
+    setContent(initialObs.content);
+    setType(initialObs.type);
+    setScope(initialObs.scope);
+    setTopicKey(initialObs.topic_key ?? '');
+  }, [initialObs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Render markdown content
   useEffect(() => {
@@ -268,7 +273,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
         {/* Error feedback */}
         {updateMutation.isError && (
           <div className='px-6 py-3 border-t border-red-400/30 bg-red-400/10 text-red-400 text-[12px] font-mono'>
-            Error: {updateMutation.error?.message ?? 'Failed to update observation'}
+            Error: {updateMutation.error instanceof Error ? updateMutation.error.message : 'Failed to update observation'}
           </div>
         )}
       </div>
