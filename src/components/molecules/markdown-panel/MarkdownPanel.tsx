@@ -11,14 +11,19 @@ import type { MarkdownPanelProps } from './types';
 
 const MARKED_OPTIONS: MarkedOptions = { async: false };
 
+/** Escapes HTML special characters to prevent XSS in rendered attributes/content. */
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 // Strip raw HTML and sanitize links in markdown content
 marked.use({
   renderer: {
     html: () => '',
     link: ({ href, title, text }) => {
-      const safeHref = href && /^https?:\/\//i.test(href) ? href : '#';
-      const titleAttr = title ? ` title="${title}"` : '';
-      return `<a href="${safeHref}"${titleAttr} rel="noopener noreferrer">${text}</a>`;
+      const safeHref = href && /^https?:\/\//i.test(href) ? escapeHtml(href) : '#';
+      const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+      return `<a href="${safeHref}"${titleAttr} rel="noopener noreferrer">${escapeHtml(text)}</a>`;
     }
   }
 });
@@ -81,8 +86,9 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
     setType(currentObs.type);
     setScope(currentObs.scope);
     setTopicKey(currentObs.topic_key ?? '');
+    updateMutation.reset();
     setEditing(false);
-  }, [currentObs]);
+  }, [currentObs, updateMutation]);
 
   // Esc key handler with proper deps
   useEffect(() => {
@@ -127,7 +133,10 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
 
   return (
     <>
-      <div className='fixed inset-0 z-40 bg-black/40 backdrop-blur-sm' onClick={editing ? handleCancel : onClose} />
+      <div
+        className='fixed inset-0 z-40 bg-black/40 backdrop-blur-sm'
+        onClick={() => { if (!updateMutation.isPending) { editing ? handleCancel() : onClose(); } }}
+      />
       <div
         className={cn(
           'fixed top-0 right-0 z-50 h-full w-full max-w-160',
@@ -270,8 +279,8 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
           )}
         </div>
 
-        {/* Error feedback */}
-        {updateMutation.isError && (
+        {/* Error feedback — only visible in edit mode */}
+        {editing && updateMutation.isError && (
           <div className='px-6 py-3 border-t border-red-400/30 bg-red-400/10 text-red-400 text-[12px] font-mono'>
             Error: {updateMutation.error instanceof Error ? updateMutation.error.message : 'Failed to update observation'}
           </div>
