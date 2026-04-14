@@ -3,11 +3,12 @@ import { cn } from '@helpers/utils';
 import { TabBar } from '@molecules/tab-bar';
 import { EmptySessionsTab } from '@organisms/empty-sessions-tab';
 import { MemoriesTab } from '@organisms/memories-tab';
+import { MergeProjectsModal } from '@organisms/merge-projects-modal';
 import { PromptsTab } from '@organisms/prompts-tab';
 import { SessionsTab } from '@organisms/sessions-tab';
 import { TimelineTab } from '@organisms/timeline-tab';
 import { TopicsTab } from '@organisms/topics-tab';
-import { Download, Upload } from 'lucide-react';
+import { Download, GitMerge, Upload } from 'lucide-react';
 import { type FC, useMemo, useRef, useState } from 'react';
 import type { EngramDashboardViewProps } from './types';
 
@@ -32,10 +33,13 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
   onExport,
   isExporting,
   onImport,
-  isImporting
+  isImporting,
+  onMergeProjects,
+  isMergingProjects
 }) => {
   const [tab, setTab] = useState<Tab>('sessions');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showMerge, setShowMerge] = useState(false);
 
   const allObservations = useMemo(() => sessions.flatMap((s) => s.observations), [sessions]);
 
@@ -124,6 +128,35 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
           }}
         />
       </div>
+
+      {/* Merge projects button */}
+      {derivedStats.allProjects.length > 1 && (
+        <div className='flex items-center'>
+          <button
+            type='button'
+            onClick={() => setShowMerge(true)}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
+              'bg-gray-light-100 dark:bg-gray-dark-800',
+              'border border-gray-light-400 dark:border-gray-dark-600',
+              'text-text-light dark:text-text-dark',
+              'hover:border-accent/60 hover:bg-accent/10 transition-colors'
+            )}
+          >
+            <GitMerge size={12} />
+            Merge Projects
+          </button>
+        </div>
+      )}
+
+      {showMerge && (
+        <MergeProjectsModal
+          projects={derivedStats.allProjects}
+          onMerge={(from, to) => onMergeProjects(from, to, () => setShowMerge(false))}
+          isMerging={isMergingProjects}
+          onClose={() => { if (!isMergingProjects) setShowMerge(false); }}
+        />
+      )}
 
       {/* Tabs */}
       <TabBar tabs={tabs} active={tab} onChange={(id) => setTab(id as Tab)} />

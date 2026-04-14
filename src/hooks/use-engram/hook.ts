@@ -132,6 +132,17 @@ export const useDeletePrompt = () => {
   });
 };
 
+/** Merge all observations from one project into another. */
+export const useMergeProjects = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ from, to }: { from: string; to: string }) => engramService.mergeProjects(from, to),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['engram'] });
+    }
+  });
+};
+
 /** Export all Engram data as a downloadable JSON file. */
 export const useEngramExport = () =>
   useMutation({
