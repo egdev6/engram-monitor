@@ -20,9 +20,16 @@ export const useTheme = () => {
   }, []);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('app-theme');
-    const parsed = JSON.parse(storedTheme || '{}');
-    const themeParsed = parsed.state?.theme;
+    let themeParsed: string | undefined;
+    try {
+      const storedTheme = localStorage.getItem('app-theme');
+      const parsed = JSON.parse(storedTheme || '{}');
+      if (parsed.state?.theme === 'light' || parsed.state?.theme === 'dark') {
+        themeParsed = parsed.state.theme;
+      }
+    } catch {
+      // Malformed localStorage — fall through to system preference
+    }
 
     if (!themeParsed) {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -31,7 +38,7 @@ export const useTheme = () => {
 
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
-    root.classList.add(themeParsed ? themeParsed : theme);
+    root.classList.add(themeParsed ?? theme);
   }, [theme, setTheme]);
 
   return {
