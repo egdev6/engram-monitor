@@ -5,7 +5,16 @@ import { cn } from '@helpers/utils';
 import { useUpdateObservation } from '@hooks/use-engram';
 import type { EngramObservation, EngramObservationUpdate, EngramObservationType, EngramScope } from '@models/engram';
 import { Check, FolderOpen, Pencil, Shield, Tag, X } from 'lucide-react';
-import { marked } from 'marked';
+import { type MarkedOptions, marked } from 'marked';
+
+const MARKED_OPTIONS: MarkedOptions = { async: false };
+
+// Configure marked to sanitize raw HTML in markdown content
+marked.use({
+  renderer: {
+    html: () => ''
+  }
+});
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarkdownPanelProps } from './types';
 
@@ -57,11 +66,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
   // Render markdown content
   useEffect(() => {
     if (contentRef.current && !editing) {
-      const html = marked(currentObs.content, { async: false }) as string;
-      contentRef.current.textContent = '';
-      const template = document.createElement('template');
-      template.innerHTML = html;
-      contentRef.current.appendChild(template.content);
+      contentRef.current.innerHTML = marked(currentObs.content, MARKED_OPTIONS) as string;
     }
   }, [currentObs.content, editing]);
 
@@ -117,7 +122,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
 
   return (
     <>
-      <div className='fixed inset-0 z-40 bg-black/40 backdrop-blur-sm' onClick={onClose} />
+      <div className='fixed inset-0 z-40 bg-black/40 backdrop-blur-sm' onClick={editing ? handleCancel : onClose} />
       <div
         className={cn(
           'fixed top-0 right-0 z-50 h-full w-full max-w-160',
@@ -134,6 +139,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                 type='text'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                aria-label='Title'
                 className={cn(INPUT_CLS, 'text-sm font-semibold w-full')}
               />
             ) : (
@@ -147,6 +153,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
+                  aria-label='Type'
                   className={cn(INPUT_CLS, 'py-1 text-[11px]')}
                 >
                   {typeOptions.map((t) => (
@@ -171,6 +178,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                     type='text'
                     value={topicKey}
                     onChange={(e) => setTopicKey(e.target.value)}
+                    aria-label='Topic key'
                     placeholder='topic_key'
                     className={cn(INPUT_CLS, 'py-1 text-[10px] w-40')}
                   />
@@ -194,6 +202,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                 <select
                   value={scope}
                   onChange={(e) => setScope(e.target.value)}
+                  aria-label='Scope'
                   className={cn(INPUT_CLS, 'py-1 text-[10px]')}
                 >
                   {scopeOptions.map((s) => (
@@ -248,6 +257,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              aria-label='Content'
               className={cn(INPUT_CLS, 'w-full h-full min-h-60 resize-none font-mono text-[13px] leading-relaxed')}
             />
           ) : (
