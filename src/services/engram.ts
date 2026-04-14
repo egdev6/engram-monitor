@@ -176,6 +176,6 @@ export const engramService = {
 
   /** Merges all observations from one project into another. */
   mergeProjects: async (from: string, to: string): Promise<void> => {
-    await engramApi.post('/projects/migrate', { from, to });
+    await engramApi.post('/projects/migrate', { from, to }, { timeout: 60_000 });
   }
 };
