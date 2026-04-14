@@ -131,3 +131,35 @@ export const useDeletePrompt = () => {
     }
   });
 };
+
+/** Export all Engram data as a downloadable JSON file. */
+export const useEngramExport = () =>
+  useMutation({
+    mutationFn: async () => {
+      const blob = await engramService.exportAll();
+      const url = URL.createObjectURL(blob);
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        const now = new Date();
+        const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        a.download = `engram-backup-${date}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } finally {
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      }
+    }
+  });
+
+/** Import Engram data from a JSON file. */
+export const useEngramImport = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => engramService.importData(file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['engram'] });
+    }
+  });
+};

@@ -1,4 +1,5 @@
 import { StatCard } from '@atoms/stat-card';
+import { cn } from '@helpers/utils';
 import { TabBar } from '@molecules/tab-bar';
 import { EmptySessionsTab } from '@organisms/empty-sessions-tab';
 import { MemoriesTab } from '@organisms/memories-tab';
@@ -6,7 +7,8 @@ import { PromptsTab } from '@organisms/prompts-tab';
 import { SessionsTab } from '@organisms/sessions-tab';
 import { TimelineTab } from '@organisms/timeline-tab';
 import { TopicsTab } from '@organisms/topics-tab';
-import { type FC, useMemo, useState } from 'react';
+import { Download, Upload } from 'lucide-react';
+import { type FC, useMemo, useRef, useState } from 'react';
 import type { EngramDashboardViewProps } from './types';
 
 type Tab = 'sessions' | 'memories' | 'topics' | 'timeline' | 'prompts' | 'empty';
@@ -26,9 +28,14 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
   onDeleteSession,
   isDeletingSession,
   onDeletePrompt,
-  isDeletingPrompt
+  isDeletingPrompt,
+  onExport,
+  isExporting,
+  onImport,
+  isImporting
 }) => {
   const [tab, setTab] = useState<Tab>('sessions');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allObservations = useMemo(() => sessions.flatMap((s) => s.observations), [sessions]);
 
@@ -66,6 +73,56 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
         <StatCard label='Observations' value={derivedStats.observations} loading={isLoadingSessions} accent={true} />
         <StatCard label='Prompts' value={derivedStats.prompts} loading={isLoadingPrompts} />
         <StatCard label='Empty' value={derivedStats.empty} loading={isLoadingSessions} />
+      </div>
+
+      {/* Export / Import */}
+      <div className='flex items-center gap-2'>
+        <button
+          type='button'
+          onClick={onExport}
+          disabled={isExporting}
+          className={cn(
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
+            'bg-gray-light-100 dark:bg-gray-dark-800',
+            'border border-gray-light-400 dark:border-gray-dark-600',
+            'text-text-light dark:text-text-dark',
+            'hover:border-accent/60 hover:bg-accent/10 transition-colors',
+            'disabled:opacity-50 disabled:cursor-not-allowed'
+          )}
+        >
+          <Download size={12} />
+          {isExporting ? 'Exporting…' : 'Export JSON'}
+        </button>
+        <button
+          type='button'
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isImporting}
+          className={cn(
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
+            'bg-gray-light-100 dark:bg-gray-dark-800',
+            'border border-gray-light-400 dark:border-gray-dark-600',
+            'text-text-light dark:text-text-dark',
+            'hover:border-accent/60 hover:bg-accent/10 transition-colors',
+            'disabled:opacity-50 disabled:cursor-not-allowed'
+          )}
+        >
+          <Upload size={12} />
+          {isImporting ? 'Importing…' : 'Import JSON'}
+        </button>
+        <input
+          ref={fileInputRef}
+          type='file'
+          accept='.json,application/json'
+          disabled={isImporting}
+          className='hidden'
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file && !isImporting) {
+              onImport(file);
+              e.target.value = '';
+            }
+          }}
+        />
       </div>
 
       {/* Tabs */}

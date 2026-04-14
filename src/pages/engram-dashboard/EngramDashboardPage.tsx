@@ -2,6 +2,8 @@ import type { EngramFilters } from '@hooks/use-engram';
 import {
   useDeletePrompt,
   useDeleteSession,
+  useEngramExport,
+  useEngramImport,
   useEngramPrompts,
   useEngramReset,
   useEngramSearch,
@@ -33,6 +35,8 @@ const EngramDashboardPage = () => {
   const resetMutation = useEngramReset();
   const deleteSessionMut = useDeleteSession();
   const deletePromptMut = useDeletePrompt();
+  const exportMutation = useEngramExport();
+  const importMutation = useEngramImport();
 
   const handleFiltersChange = (partial: Partial<EngramFilters>) => {
     setFilters((prev) => ({ ...prev, ...partial }));
@@ -72,6 +76,27 @@ const EngramDashboardPage = () => {
     });
   };
 
+  const handleExport = () => {
+    exportMutation.mutate({
+      onError: (err) => {
+        const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Unknown error';
+        setTimeout(() => window.alert(`Export failed: ${message}`), 0);
+      }
+    });
+  };
+
+  const handleImport = (file: File) => {
+    importMutation.mutate(file, {
+      onSuccess: () => {
+        setTimeout(() => window.alert('Import completed successfully.'), 0);
+      },
+      onError: (err) => {
+        const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Unknown error';
+        setTimeout(() => window.alert(`Import failed: ${message}`), 0);
+      }
+    });
+  };
+
   const handleDeletePrompt = (id: number) => {
     deletePromptMut.mutate(id, {
       onError: (err) => {
@@ -105,6 +130,10 @@ const EngramDashboardPage = () => {
       isDeletingSession={deleteSessionMut.isPending}
       onDeletePrompt={handleDeletePrompt}
       isDeletingPrompt={deletePromptMut.isPending}
+      onExport={handleExport}
+      isExporting={exportMutation.isPending}
+      onImport={handleImport}
+      isImporting={importMutation.isPending}
     />
   );
 };

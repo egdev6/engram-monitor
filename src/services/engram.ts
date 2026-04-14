@@ -158,5 +158,19 @@ export const engramService = {
   /** Hard-deletes a single prompt by ID. */
   deletePrompt: async (id: number): Promise<void> => {
     await engramApi.delete(`/prompts/${id}`);
+  },
+
+  /** Exports all Engram data as JSON. */
+  exportAll: async (): Promise<Blob> => {
+    const { data } = await engramApi.get<Blob>('/export', { responseType: 'blob', timeout: 0 });
+    return data;
+  },
+
+  /** Imports Engram data from a JSON file. Sends the file directly to avoid doubling memory. */
+  importData: async (file: File): Promise<void> => {
+    await engramApi.post('/import', file, {
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 60_000
+    });
   }
 };
