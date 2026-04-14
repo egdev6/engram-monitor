@@ -163,10 +163,8 @@ export const engramService = {
   /** Imports Engram data from a JSON file. */
   importData: async (file: File): Promise<void> => {
     const text = await file.text();
-    try {
-      JSON.parse(text);
-    } catch {
-      throw new Error('JSON de respaldo de Engram no válido');
+    if (!text.trimStart().startsWith('{') && !text.trimStart().startsWith('[')) {
+      throw new Error('Invalid Engram backup file');
     }
     await engramApi.post('/import', text, {
       headers: { 'Content-Type': 'application/json' },

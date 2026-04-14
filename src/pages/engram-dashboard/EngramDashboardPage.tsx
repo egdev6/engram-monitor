@@ -79,8 +79,8 @@ const EngramDashboardPage = () => {
   const handleExport = () => {
     exportMutation.mutate(undefined, {
       onError: (err) => {
-        const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Error desconocido';
-        setTimeout(() => window.alert(`Error al exportar: ${message}`), 0);
+        const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Unknown error';
+        setTimeout(() => window.alert(`Export failed: ${message}`), 0);
       }
     });
   };
@@ -88,11 +88,11 @@ const EngramDashboardPage = () => {
   const handleImport = (file: File) => {
     importMutation.mutate(file, {
       onSuccess: () => {
-        window.alert('Importación completada correctamente.');
+        window.alert('Import completed successfully.');
       },
       onError: (err) => {
-        const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Error desconocido';
-        window.alert(`Error al importar: ${message}`);
+        const message = axios.isAxiosError(err) ? err.message : err instanceof Error ? err.message : 'Unknown error';
+        window.alert(`Import failed: ${message}`);
       }
     });
   };
