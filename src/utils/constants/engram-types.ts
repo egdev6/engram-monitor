@@ -34,7 +34,7 @@ export const KNOWN_TYPES = [
 ] as const;
 
 export const INPUT_CLS = [
-  'px-3 py-2 rounded-lg text-sm font-mono',
+  'px-3 py-2 rounded-lg text-sm',
   'bg-gray-light-100 dark:bg-gray-dark-800',
   'border border-gray-light-400 dark:border-gray-dark-400',
   'text-text-light dark:text-text-dark placeholder:text-gray-light-600 dark:placeholder:text-gray-dark-300',

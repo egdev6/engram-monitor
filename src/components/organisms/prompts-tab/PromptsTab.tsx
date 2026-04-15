@@ -73,20 +73,20 @@ const PromptsTab: FC<PromptsTabProps> = ({ prompts, loading, onDelete, isDeletin
               </p>
 
               {/* Meta */}
-              <div className='shrink-0 flex flex-col items-end gap-1.5 min-w-[120px]'>
+              <div className='shrink-0 flex flex-col items-end gap-1.5 min-w-30'>
                 {p.project && (
-                  <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-600 dark:text-gray-dark-300 truncate max-w-[110px]'>
+                  <span className='flex items-center gap-1 text-[10px] text-gray-light-600 dark:text-gray-dark-300 truncate max-w-27.5'>
                     <Folder size={10} className='shrink-0' />
                     <span className='truncate'>{p.project}</span>
                   </span>
                 )}
-                <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+                <span className='flex items-center gap-1 text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
                   <Clock size={10} className='shrink-0' />
                   {timeAgo(p.created_at)}
                 </span>
                 <a
                   href={`/sessions/${encodeURIComponent(p.session_id)}`}
-                  className='flex items-center gap-1 text-[10px] font-mono text-accent/70 hover:text-accent transition-colors truncate max-w-[110px]'
+                  className='flex items-center gap-1 text-[10px] text-accent/70 hover:text-accent transition-colors truncate max-w-27.5'
                   title={p.session_id}
                 >
                   <Link size={10} className='shrink-0' />

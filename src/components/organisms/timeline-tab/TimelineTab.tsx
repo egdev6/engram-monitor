@@ -17,7 +17,9 @@ import type { TimelineTabProps } from './types';
  */
 function getDotColor(type: string): string {
   const colorEntry = TYPE_COLORS[type];
-  if (!colorEntry) return 'bg-gray-dark-400';
+  if (!colorEntry) {
+    return 'bg-gray-dark-400';
+  }
   const textMatch = colorEntry.match(/\btext-[^\s]+\b/);
   return textMatch ? `bg-current ${textMatch[0]}` : 'bg-gray-dark-400';
 }
@@ -123,7 +125,7 @@ const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects 
         <div className='flex items-center gap-3 flex-wrap'>
           <FilterSelect label='project' value={projectFilter} onChange={setProjectFilter} options={projectOptions} />
           <FilterSelect label='type' value={typeFilter} onChange={setTypeFilter} options={typeOptions} />
-          <span className='text-[11px] font-mono text-gray-light-500 dark:text-gray-dark-300 ml-auto'>
+          <span className='text-[11px] text-gray-light-500 dark:text-gray-dark-300 ml-auto'>
             {filtered.length} observation{filtered.length !== 1 ? 's' : ''} across {days.length} day
             {days.length !== 1 ? 's' : ''}
           </span>
@@ -143,14 +145,14 @@ const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects 
               <div className='flex items-center gap-3 py-3'>
                 <div className='w-3 h-3 rounded-full bg-accent/80 ring-2 ring-accent/20 shrink-0' />
                 <h3 className='text-[13px] font-semibold text-text-light dark:text-text-dark'>{day.label}</h3>
-                <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+                <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
                   {day.observations.length} obs
                 </span>
                 <div className='flex-1 h-px bg-gray-light-300 dark:bg-gray-dark-700' />
               </div>
 
               {/* Observations for this day */}
-              <div className='ml-1.5 border-l-2 border-gray-light-300 dark:border-gray-dark-700 pl-6 flex flex-col gap-0'>
+              <div className='ml-1.5 border-l-2  border-gray-light-300 dark:border-gray-dark-700 pl-4 flex flex-col items-start gap-1'>
                 {day.observations.map((obs, obsIdx) => {
                   const dotColor = getDotColor(obs.type);
                   const isLast = obsIdx === day.observations.length - 1 && dayIdx === days.length - 1;
@@ -160,19 +162,20 @@ const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects 
                       type='button'
                       onClick={() => setSelected(obs)}
                       className={cn(
-                        'relative flex items-start gap-3 py-2.5 px-3 -ml-9 text-left rounded-lg cursor-pointer',
-                        'hover:bg-gray-light-200/50 dark:hover:bg-gray-dark-700/50 transition-colors',
+                        'relative w-auto flex items-start gap-3 py-2.5 px-3 text-left rounded-lg cursor-pointer border',
+                        'border-transparent',
+                        'hover:border-accent/40 hover:bg-gray-light-200 dark:hover:bg-gray-dark-700',
                         isLast && 'mb-1'
                       )}
                     >
                       {/* Dot on the line */}
+                      <div className='absolute -left-4.25 top-4.75 w-8 h-px bg-gray-light-300 dark:bg-gray-dark-700'></div>
                       <div
                         className={cn(
-                          'w-2.5 h-2.5 rounded-full mt-1 shrink-0 ring-2 ring-background-light dark:ring-background-dark',
+                          'z-2 w-2.5 h-2.5 rounded-full mt-1 shrink-0 ring-2 ring-background-light dark:ring-background-dark',
                           dotColor
                         )}
                       />
-
                       {/* Content */}
                       <div className='flex flex-col gap-1 min-w-0 flex-1'>
                         <div className='flex items-center gap-2 flex-wrap'>
@@ -181,18 +184,18 @@ const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects 
                           </span>
                         </div>
                         <div className='flex items-center gap-2 flex-wrap'>
-                          <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+                          <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
                             {formatTime(obs.created_at)}
                           </span>
                           <TypeBadge type={obs.type} />
                           {obs.project && (
-                            <span className='inline-flex items-center gap-1 text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+                            <span className='inline-flex items-center gap-1 text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
                               <FolderOpen size={9} className='opacity-60' />
                               {obs.project}
                             </span>
                           )}
                           {obs.topic_key && (
-                            <span className='text-[9px] font-mono text-gray-light-400 dark:text-gray-dark-300'>
+                            <span className='text-[9px] text-gray-light-400 dark:text-gray-dark-300'>
                               {obs.topic_key}
                             </span>
                           )}

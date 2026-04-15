@@ -3,7 +3,7 @@ import { TypeBadge } from '@atoms/type-badge';
 import { INPUT_CLS, KNOWN_TYPES } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
 import { useUpdateObservation } from '@hooks/use-engram';
-import type { EngramObservation, EngramObservationUpdate, EngramObservationType, EngramScope } from '@models/engram';
+import type { EngramObservation, EngramObservationType, EngramObservationUpdate, EngramScope } from '@models/engram';
 import { Check, FolderOpen, Pencil, Shield, Tag, X } from 'lucide-react';
 import { type MarkedOptions, marked } from 'marked';
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -63,7 +63,9 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
 
   // Sync from polling — only when initialObs changes and not editing
   useEffect(() => {
-    if (editing) return;
+    if (editing) {
+      return;
+    }
 
     setCurrentObs(initialObs);
     setTitle(initialObs.title);
@@ -94,7 +96,9 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (updateMutation.isPending) return;
+        if (updateMutation.isPending) {
+          return;
+        }
         if (editing) {
           handleCancel();
         } else {
@@ -108,12 +112,22 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
 
   const handleSave = () => {
     const data: EngramObservationUpdate = {};
-    if (title !== currentObs.title) data.title = title;
-    if (content !== currentObs.content) data.content = content;
-    if (type !== currentObs.type) data.type = type;
-    if (scope !== currentObs.scope) data.scope = scope;
+    if (title !== currentObs.title) {
+      data.title = title;
+    }
+    if (content !== currentObs.content) {
+      data.content = content;
+    }
+    if (type !== currentObs.type) {
+      data.type = type;
+    }
+    if (scope !== currentObs.scope) {
+      data.scope = scope;
+    }
     const newTopicKey = topicKey.trim() || null;
-    if (newTopicKey !== (currentObs.topic_key ?? null)) data.topic_key = newTopicKey;
+    if (newTopicKey !== (currentObs.topic_key ?? null)) {
+      data.topic_key = newTopicKey;
+    }
 
     if (Object.keys(data).length === 0) {
       setEditing(false);
@@ -136,7 +150,11 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
     <>
       <div
         className='fixed inset-0 z-40 bg-black/40 backdrop-blur-sm'
-        onClick={() => { if (!updateMutation.isPending) { editing ? handleCancel() : onClose(); } }}
+        onClick={() => {
+          if (!updateMutation.isPending) {
+            editing ? handleCancel() : onClose();
+          }
+        }}
       />
       <div
         className={cn(
@@ -181,7 +199,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                 <TypeBadge type={currentObs.type} />
               )}
               {currentObs.project && !editing && (
-                <span className='inline-flex items-center gap-1 text-[11px] font-mono text-gray-light-600 dark:text-gray-dark-300'>
+                <span className='inline-flex items-center gap-1 text-[11px] text-gray-light-600 dark:text-gray-dark-300'>
                   <FolderOpen size={10} className='opacity-60 shrink-0' />
                   {currentObs.project}
                 </span>
@@ -200,13 +218,13 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                 </div>
               ) : (
                 currentObs.topic_key && (
-                  <span className='inline-flex items-center gap-1 text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+                  <span className='inline-flex items-center gap-1 text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
                     <Tag size={9} className='text-gray-light-400 dark:text-gray-dark-300 shrink-0' />
                     {currentObs.topic_key}
                   </span>
                 )
               )}
-              <span className='text-[11px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+              <span className='text-[11px] text-gray-light-500 dark:text-gray-dark-300'>
                 {new Date(currentObs.created_at).toLocaleString()}
               </span>
             </div>
@@ -230,7 +248,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
             ) : (
               currentObs.scope &&
               currentObs.scope !== 'project' && (
-                <span className='inline-flex items-center gap-1 text-[10px] font-mono text-gray-light-400 dark:text-gray-dark-300'>
+                <span className='inline-flex items-center gap-1 text-[10px] text-gray-light-400 dark:text-gray-dark-300'>
                   <Shield size={9} className='shrink-0' />
                   {currentObs.scope}
                 </span>
@@ -247,7 +265,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                   onClick={handleSave}
                   disabled={updateMutation.isPending}
                   className={cn(
-                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-mono',
+                    'flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px]',
                     'bg-green/20 text-green border border-green/30',
                     'hover:bg-green/30 transition-colors',
                     'disabled:opacity-50 disabled:cursor-not-allowed'
@@ -273,7 +291,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
               value={content}
               onChange={(e) => setContent(e.target.value)}
               aria-label='Content'
-              className={cn(INPUT_CLS, 'w-full h-full min-h-60 resize-none font-mono text-[13px] leading-relaxed')}
+              className={cn(INPUT_CLS, 'w-full h-full min-h-60 resize-none text-[13px] leading-relaxed')}
             />
           ) : (
             <div ref={contentRef} className='markdown-body text-[13px] text-text-light dark:text-text-dark' />
@@ -282,8 +300,9 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
 
         {/* Error feedback — only visible in edit mode */}
         {editing && updateMutation.isError && (
-          <div className='px-6 py-3 border-t border-red-400/30 bg-red-400/10 text-red-400 text-[12px] font-mono'>
-            Error: {updateMutation.error instanceof Error ? updateMutation.error.message : 'Failed to update observation'}
+          <div className='px-6 py-3 border-t border-red-400/30 bg-red-400/10 text-red-400 text-[12px]'>
+            Error:{' '}
+            {updateMutation.error instanceof Error ? updateMutation.error.message : 'Failed to update observation'}
           </div>
         )}
       </div>

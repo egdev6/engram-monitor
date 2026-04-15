@@ -1,14 +1,14 @@
 import { StatCard } from '@atoms/stat-card';
-import { cn } from '@helpers/utils';
+import { useSettingsStore } from '@hooks/use-settings';
 import { TabBar } from '@molecules/tab-bar';
 import { EmptySessionsTab } from '@organisms/empty-sessions-tab';
 import { MemoriesTab } from '@organisms/memories-tab';
 import { MergeProjectsModal } from '@organisms/merge-projects-modal';
 import { PromptsTab } from '@organisms/prompts-tab';
 import { SessionsTab } from '@organisms/sessions-tab';
+import { SettingsModal } from '@organisms/settings-modal';
 import { TimelineTab } from '@organisms/timeline-tab';
 import { TopicsTab } from '@organisms/topics-tab';
-import { Download, GitMerge, Upload } from 'lucide-react';
 import { type FC, useMemo, useRef, useState } from 'react';
 import type { EngramDashboardViewProps } from './types';
 
@@ -40,6 +40,8 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
   const [tab, setTab] = useState<Tab>('sessions');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showMerge, setShowMerge] = useState(false);
+  const isSettingsOpen = useSettingsStore((state) => state.isOpen);
+  const closeSettings = useSettingsStore((state) => state.closeSettings);
 
   const allObservations = useMemo(() => sessions.flatMap((s) => s.observations), [sessions]);
 
@@ -51,7 +53,7 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
     return {
       projects: projects.length,
       sessions: sessions.length,
-      observations: totalObs,
+      memories: totalObs,
       prompts: prompts.length,
       empty: emptySessions.length,
       topics: topicKeys.size,
@@ -61,110 +63,55 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
 
   const tabs = [
     { id: 'sessions' as Tab, label: 'Sessions', count: derivedStats.sessions },
-    { id: 'memories' as Tab, label: 'Memories', count: derivedStats.observations },
-    { id: 'topics' as Tab, label: 'Topics', count: derivedStats.topics },
+    { id: 'memories' as Tab, label: 'Memories', count: derivedStats.memories },
     { id: 'timeline' as Tab, label: 'Timeline', count: allObservations.length },
+    { id: 'topics' as Tab, label: 'Topics', count: derivedStats.topics },
     { id: 'prompts' as Tab, label: 'Prompts', count: derivedStats.prompts },
     { id: 'empty' as Tab, label: 'Empty', count: derivedStats.empty }
   ];
 
   return (
     <div className='w-full max-w-275 flex flex-col gap-5'>
+      {/* Hidden file input for import */}
+      <input
+        ref={fileInputRef}
+        type='file'
+        accept='.json,application/json'
+        disabled={isImporting}
+        className='hidden'
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file && !isImporting) {
+            onImport(file);
+            e.target.value = '';
+          }
+        }}
+      />
+
       {/* Stats */}
-      <div className='grid grid-cols-2 sm:grid-cols-5 gap-2'>
+      <div className='grid grid-cols-2 sm:grid-cols-6 gap-2'>
         <StatCard label='Projects' value={derivedStats.projects} loading={isLoadingSessions} />
-        <StatCard label='Sessions' value={derivedStats.sessions} loading={isLoadingSessions} />
-        <StatCard label='Observations' value={derivedStats.observations} loading={isLoadingSessions} accent={true} />
-        <StatCard label='Prompts' value={derivedStats.prompts} loading={isLoadingPrompts} />
-        <StatCard label='Empty' value={derivedStats.empty} loading={isLoadingSessions} />
-      </div>
-
-      {/* Export / Import */}
-      <div className='flex items-center gap-2'>
-        <button
-          type='button'
-          onClick={onExport}
-          disabled={isExporting}
-          className={cn(
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
-            'bg-gray-light-100 dark:bg-gray-dark-800',
-            'border border-gray-light-400 dark:border-gray-dark-600',
-            'text-text-light dark:text-text-dark',
-            'hover:border-accent/60 hover:bg-accent/10 transition-colors',
-            'disabled:opacity-50 disabled:cursor-not-allowed'
-          )}
-        >
-          <Download size={12} />
-          {isExporting ? 'Exporting…' : 'Export JSON'}
-        </button>
-        <button
-          type='button'
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isImporting}
-          className={cn(
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
-            'bg-gray-light-100 dark:bg-gray-dark-800',
-            'border border-gray-light-400 dark:border-gray-dark-600',
-            'text-text-light dark:text-text-dark',
-            'hover:border-accent/60 hover:bg-accent/10 transition-colors',
-            'disabled:opacity-50 disabled:cursor-not-allowed'
-          )}
-        >
-          <Upload size={12} />
-          {isImporting ? 'Importing…' : 'Import JSON'}
-        </button>
-        <input
-          ref={fileInputRef}
-          type='file'
-          accept='.json,application/json'
-          disabled={isImporting}
-          className='hidden'
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file && !isImporting) {
-              onImport(file);
-              e.target.value = '';
-            }
-          }}
+        <StatCard
+          label='Sessions'
+          value={derivedStats.sessions}
+          loading={isLoadingSessions}
+          accent={tab === 'sessions'}
         />
-      </div>
-
-      {/* Merge projects button */}
-      {derivedStats.allProjects.length > 1 && (
-        <div className='flex items-center'>
-          <button
-            type='button'
-            onClick={() => setShowMerge(true)}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
-              'bg-gray-light-100 dark:bg-gray-dark-800',
-              'border border-gray-light-400 dark:border-gray-dark-600',
-              'text-text-light dark:text-text-dark',
-              'hover:border-accent/60 hover:bg-accent/10 transition-colors'
-            )}
-          >
-            <GitMerge size={12} />
-            Merge Projects
-          </button>
-        </div>
-      )}
-
-      {showMerge && (
-        <MergeProjectsModal
-          projects={derivedStats.allProjects}
-          onMerge={(from, to) => onMergeProjects(from, to, () => setShowMerge(false))}
-          isMerging={isMergingProjects}
-          onClose={() => { if (!isMergingProjects) setShowMerge(false); }}
+        <StatCard
+          label='Memories'
+          value={derivedStats.memories}
+          loading={isLoadingSessions}
+          accent={tab === 'memories' || tab === 'timeline'}
         />
-      )}
+        <StatCard label='Topics' value={derivedStats.topics} loading={isLoadingSessions} accent={tab === 'topics'} />
+        <StatCard label='Prompts' value={derivedStats.prompts} loading={isLoadingPrompts} accent={tab === 'prompts'} />
+        <StatCard label='Empty' value={derivedStats.empty} loading={isLoadingSessions} accent={tab === 'empty'} />
+      </div>
 
       {/* Tabs */}
       <TabBar tabs={tabs} active={tab} onChange={(id) => setTab(id as Tab)} />
 
       {/* Tab content */}
-      {tab === 'sessions' && (
-        <SessionsTab sessions={sessions} loading={isLoadingSessions} allProjects={derivedStats.allProjects} />
-      )}
       {tab === 'memories' && (
         <MemoriesTab
           observations={observations}
@@ -174,12 +121,11 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
           projects={derivedStats.allProjects}
         />
       )}
+      {tab === 'sessions' && (
+        <SessionsTab sessions={sessions} loading={isLoadingSessions} allProjects={derivedStats.allProjects} />
+      )}
       {tab === 'topics' && (
-        <TopicsTab
-          observations={allObservations}
-          loading={isLoadingSessions}
-          allProjects={derivedStats.allProjects}
-        />
+        <TopicsTab observations={allObservations} loading={isLoadingSessions} allProjects={derivedStats.allProjects} />
       )}
       {tab === 'timeline' && (
         <TimelineTab
@@ -202,6 +148,41 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
           loading={isLoadingSessions}
           onDelete={onDeleteSession}
           isDeleting={isDeletingSession}
+        />
+      )}
+
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <SettingsModal
+          onClose={closeSettings}
+          onExport={onExport}
+          isExporting={isExporting}
+          onImport={onImport}
+          isImporting={isImporting}
+          onMergeClick={() => {
+            closeSettings();
+            setShowMerge(true);
+          }}
+          showMerge={derivedStats.allProjects.length > 1}
+          fileInputRef={fileInputRef}
+        />
+      )}
+
+      {/* Merge Projects Modal */}
+      {showMerge && (
+        <MergeProjectsModal
+          projects={derivedStats.allProjects}
+          onMerge={(from, to) => {
+            onMergeProjects(from, to, () => {
+              setShowMerge(false);
+            });
+          }}
+          isMerging={isMergingProjects}
+          onClose={() => {
+            if (!isMergingProjects) {
+              setShowMerge(false);
+            }
+          }}
         />
       )}
     </div>

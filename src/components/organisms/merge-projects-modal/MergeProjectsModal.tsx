@@ -1,3 +1,4 @@
+import { Button } from '@atoms/button';
 import { INPUT_CLS } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
 import { ArrowRight, GitMerge, X } from 'lucide-react';
@@ -16,7 +17,9 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -24,17 +27,18 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
 
   // Reset target if it matches the new source
   useEffect(() => {
-    if (to === from) setTo('');
+    if (to === from) {
+      setTo('');
+    }
   }, [from, to]);
 
   const handleMerge = () => {
-    if (!canMerge) return;
-    if (
-      !window.confirm(
-        `Merge all observations from "${from}" into "${to}"?\n\nThis action cannot be undone.`
-      )
-    )
+    if (!canMerge) {
       return;
+    }
+    if (!window.confirm(`Merge all observations from "${from}" into "${to}"?\n\nThis action cannot be undone.`)) {
+      return;
+    }
     onMerge(from, to);
   };
 
@@ -82,7 +86,7 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
           </button>
         </div>
 
-        <p className='text-[12px] font-mono text-gray-light-600 dark:text-gray-dark-300 leading-relaxed'>
+        <p className='text-[12px] text-gray-light-600 dark:text-gray-dark-300 leading-relaxed'>
           Move all observations from one project into another. The source project will be empty after merging.
         </p>
 
@@ -91,7 +95,7 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
           <div className='flex-1 flex flex-col gap-1'>
             <label
               htmlFor={fromId}
-              className='text-[10px] font-mono uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300'
+              className='text-[10px] uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300'
             >
               From
             </label>
@@ -116,7 +120,7 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
           <div className='flex-1 flex flex-col gap-1'>
             <label
               htmlFor={toId}
-              className='text-[10px] font-mono uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300'
+              className='text-[10px] uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300'
             >
               Into
             </label>
@@ -139,34 +143,12 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
 
         {/* Actions */}
         <div className='flex justify-end gap-2'>
-          <button
-            type='button'
-            onClick={onClose}
-            disabled={isMerging}
-            className={cn(
-              'px-3 py-1.5 rounded-lg text-[11px] font-mono',
-              'border border-gray-light-400 dark:border-gray-dark-600',
-              'text-text-light dark:text-text-dark',
-              'hover:bg-gray-light-200 dark:hover:bg-gray-dark-800 transition-colors',
-              'disabled:opacity-40 disabled:cursor-not-allowed'
-            )}
-          >
+          <Button variant='ghost' size='sm' onClick={onClose} disabled={isMerging}>
             Cancel
-          </button>
-          <button
-            type='button'
-            onClick={handleMerge}
-            disabled={!canMerge}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-mono',
-              'bg-accent/20 text-accent border border-accent/30',
-              'hover:bg-accent/30 transition-colors',
-              'disabled:opacity-40 disabled:cursor-not-allowed'
-            )}
-          >
-            <GitMerge size={12} />
+          </Button>
+          <Button variant='primary' size='sm' icon={GitMerge} onClick={handleMerge} disabled={!canMerge}>
             {isMerging ? 'Merging…' : 'Merge'}
-          </button>
+          </Button>
         </div>
       </div>
     </>

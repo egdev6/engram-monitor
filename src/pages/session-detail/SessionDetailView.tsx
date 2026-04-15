@@ -42,8 +42,8 @@ export const SessionDetailView: FC<SessionDetailViewProps> = ({ session: s, allP
       {/* ── Back + breadcrumb ── */}
       <div className='flex items-center gap-3'>
         <BackButton onClick={onBack} />
-        <span className='text-[12px] font-mono text-gray-light-500 dark:text-gray-dark-300'>Sessions /</span>
-        <span className='text-[12px] font-mono text-text-light dark:text-text-dark truncate'>{s.agentName}</span>
+        <span className='text-[12px] text-gray-light-500 dark:text-gray-dark-300'>Sessions /</span>
+        <span className='text-[12px] text-text-light dark:text-text-dark truncate'>{s.agentName}</span>
       </div>
 
       {/* ── Session metadata card ── */}

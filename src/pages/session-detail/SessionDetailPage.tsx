@@ -30,7 +30,7 @@ const SessionDetailPage = () => {
   if (!session) {
     return (
       <div className='flex flex-col items-center gap-4 py-20'>
-        <p className='text-[13px] font-mono text-gray-light-600 dark:text-gray-dark-300'>Session not found</p>
+        <p className='text-[13px] text-gray-light-600 dark:text-gray-dark-300'>Session not found</p>
         <BackButton label='Back to dashboard' onClick={handleBack} />
       </div>
     );

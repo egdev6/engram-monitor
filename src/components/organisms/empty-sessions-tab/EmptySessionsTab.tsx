@@ -51,16 +51,14 @@ const EmptySessionsTab: FC<EmptySessionsTabProps> = ({ sessionSummaries, loading
                          hover:border-accent/30 transition-colors'
             >
               <div className='flex-1 min-w-0 flex items-center gap-4'>
-                <span className='text-xs font-mono text-text-light dark:text-text-dark truncate max-w-[260px]'>
-                  {s.id}
-                </span>
+                <span className='text-xs text-text-light dark:text-text-dark truncate max-w-[260px]'>{s.id}</span>
                 {s.project && (
-                  <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-600 dark:text-gray-dark-300 truncate'>
+                  <span className='flex items-center gap-1 text-[10px] text-gray-light-600 dark:text-gray-dark-300 truncate'>
                     <Folder size={10} className='shrink-0' />
                     <span className='truncate'>{s.project}</span>
                   </span>
                 )}
-                <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300 shrink-0'>
+                <span className='flex items-center gap-1 text-[10px] text-gray-light-500 dark:text-gray-dark-300 shrink-0'>
                   <Clock size={10} />
                   {timeAgo(s.started_at)}
                 </span>

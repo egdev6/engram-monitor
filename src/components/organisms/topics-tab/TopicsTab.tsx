@@ -69,8 +69,11 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
   const toggleExpand = (key: string) => {
     setExpanded((prev) => {
       const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
       return next;
     });
   };
@@ -101,7 +104,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
         <SearchInput value={search} onChange={setSearch} placeholder='Search by topic key, title, content…' />
         <div className='flex items-center gap-3 flex-wrap'>
           <FilterSelect label='project' value={projectFilter} onChange={setProjectFilter} options={projectOptions} />
-          <span className='text-[11px] font-mono text-gray-light-500 dark:text-gray-dark-300 ml-auto'>
+          <span className='text-[11px] text-gray-light-500 dark:text-gray-dark-300 ml-auto'>
             {filtered.length} topic{filtered.length !== 1 ? 's' : ''}
             {groups.length !== filtered.length ? ` / ${groups.length} total` : ''}
           </span>
@@ -122,7 +125,8 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
                 className={cn(
                   'rounded-lg border overflow-hidden',
                   'border-gray-light-300 dark:border-gray-dark-700',
-                  'bg-gray-light-100/50 dark:bg-gray-dark-800/50'
+                  'bg-gray-light-100/50 dark:bg-gray-dark-800/50',
+                  'hover:border-accent/50 transition-colors'
                 )}
               >
                 {/* Group header */}
@@ -144,7 +148,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
 
                   <Tag size={12} className='text-accent shrink-0' />
 
-                  <span className='text-[13px] font-mono font-medium text-text-light dark:text-text-dark truncate'>
+                  <span className='text-[13px] font-medium text-text-light dark:text-text-dark truncate'>
                     {group.topicKey}
                   </span>
 
@@ -152,13 +156,13 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
                     {group.projects.map((p) => (
                       <span
                         key={p}
-                        className='inline-flex items-center gap-1 text-[10px] font-mono text-gray-light-600 dark:text-gray-dark-300'
+                        className='inline-flex items-center gap-1 text-[10px] text-gray-light-600 dark:text-gray-dark-300'
                       >
                         <FolderOpen size={9} className='opacity-60' />
                         {p}
                       </span>
                     ))}
-                    <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300 tabular-nums'>
+                    <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300 tabular-nums'>
                       {group.observations.length} obs
                     </span>
                     {group.types.slice(0, 3).map((t) => (
@@ -190,10 +194,8 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
                         </div>
 
                         <div className='flex flex-col gap-0.5 min-w-0 flex-1'>
-                          <span className='text-[12px] text-text-light dark:text-text-dark truncate'>
-                            {obs.title}
-                          </span>
-                          <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+                          <span className='text-[12px] text-text-light dark:text-text-dark truncate'>{obs.title}</span>
+                          <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
                             {new Date(obs.created_at).toLocaleString()}
                           </span>
                         </div>
@@ -201,7 +203,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
                         <TypeBadge type={obs.type} />
 
                         {obs.revision_count > 0 && (
-                          <span className='text-[9px] font-mono text-gray-light-400 dark:text-gray-dark-300 shrink-0'>
+                          <span className='text-[9px] text-gray-light-400 dark:text-gray-dark-300 shrink-0'>
                             rev {obs.revision_count}
                           </span>
                         )}

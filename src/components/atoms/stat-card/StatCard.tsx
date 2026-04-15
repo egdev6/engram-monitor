@@ -10,9 +10,7 @@ const StatCard: FC<StatCardProps> = ({ label, value, loading, accent }) => (
       accent && 'border-accent/40'
     )}
   >
-    <span className='text-[10px] uppercase tracking-widest text-gray-light-700 dark:text-gray-dark-300 font-mono'>
-      {label}
-    </span>
+    <span className='text-[10px] uppercase tracking-widest text-gray-light-700 dark:text-gray-dark-300'>{label}</span>
     {loading ? (
       <div className='h-6 w-12 rounded bg-gray-light-300 dark:bg-gray-dark-600 animate-pulse mt-0.5' />
     ) : (

@@ -1,8 +1,8 @@
+import { DateInput } from '@atoms/date-input';
 import { EmptyState } from '@atoms/empty-state';
 import { FilterSelect } from '@atoms/filter-select';
 import { SearchInput } from '@atoms/search-input';
-import { INPUT_CLS, KNOWN_TYPES } from '@constants/engram-types';
-import { cn } from '@helpers/utils';
+import { KNOWN_TYPES } from '@constants/engram-types';
 import { ClearFiltersBar } from '@molecules/clear-filters-bar';
 import { SessionCard } from '@organisms/session-card';
 import { type FC, useMemo, useState } from 'react';
@@ -68,7 +68,7 @@ const SessionsTab: FC<SessionsTabProps> = ({ sessions, loading, allProjects }) =
   return (
     <>
       {/* ── Filter bar ── */}
-      <div className='flex flex-col gap-3 pb-1'>
+      <div className='flex flex-col gap-3'>
         <SearchInput value={search} onChange={setSearch} placeholder='Search by agent, project, topic, title…' />
 
         <div className='flex items-center gap-3 flex-wrap'>
@@ -77,30 +77,8 @@ const SessionsTab: FC<SessionsTabProps> = ({ sessions, loading, allProjects }) =
 
           {/* Date range */}
           <div className='flex items-center gap-1.5'>
-            <div className='flex items-center gap-1.5'>
-              <span className='text-[10px] font-mono uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300 shrink-0'>
-                from
-              </span>
-              <input
-                type='date'
-                value={dateFrom}
-                max={dateTo || undefined}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className={cn(INPUT_CLS, 'py-1.5')}
-              />
-            </div>
-            <div className='flex items-center gap-1.5'>
-              <span className='text-[10px] font-mono uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300 shrink-0'>
-                to
-              </span>
-              <input
-                type='date'
-                value={dateTo}
-                min={dateFrom || undefined}
-                onChange={(e) => setDateTo(e.target.value)}
-                className={cn(INPUT_CLS, 'py-1.5')}
-              />
-            </div>
+            <DateInput label='from' value={dateFrom} onChange={setDateFrom} max={dateTo || undefined} />
+            <DateInput label='to' value={dateTo} onChange={setDateTo} min={dateFrom || undefined} />
           </div>
         </div>
 

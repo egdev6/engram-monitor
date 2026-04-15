@@ -24,11 +24,9 @@ const ObservationRow: FC<ObservationRowProps> = ({ observation: obs, onClick, sh
     </div>
     <div className='w-full flex justify-between gap-0.5 shrink-0'>
       {!showTime && obs.project && (
-        <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300 hidden sm:block'>
-          {obs.project}
-        </span>
+        <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300 hidden sm:block'>{obs.project}</span>
       )}
-      <span className='flex items-center gap-1 text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+      <span className='flex items-center gap-1 text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
         {showTime ? (
           <>
             <Clock size={10} strokeWidth={1.5} />

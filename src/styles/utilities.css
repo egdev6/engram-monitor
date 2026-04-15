@@ -53,4 +53,13 @@
   .fs-small { font-size: var(--text-small); line-height: 1.2;}
   .font-primary { font-family: var(--font-primary); }
   .font-secondary { font-family: var(--font-secondary); }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
 }

@@ -29,35 +29,31 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
   return (
     <>
       {/* ── Filter panel ── */}
-      <div className='flex flex-col gap-3 rounded-lg border border-gray-light-300 dark:border-gray-dark-700 bg-gray-light-100 dark:bg-gray-dark-800 px-4 py-3'>
+      <div className='flex flex-col gap-3'>
         <SearchInput
           value={filters.query}
           onChange={(query) => onFiltersChange({ query })}
           placeholder='Search by title, content, topic…'
-          className='bg-transparent border-gray-light-300 dark:border-gray-dark-700'
         />
 
-        <div className='flex items-center gap-1.5 flex-wrap'>
+        <div className='flex items-center gap-3 flex-wrap'>
           <FilterSelect
             label='project'
             value={filters.project}
             onChange={(project) => onFiltersChange({ project })}
             options={projectOptions}
-            className='bg-transparent border-gray-light-300 dark:border-gray-dark-700'
           />
           <FilterSelect
             label='type'
             value={filters.type}
             onChange={(type) => onFiltersChange({ type })}
             options={typeOptions}
-            className='bg-transparent border-gray-light-300 dark:border-gray-dark-700'
           />
           <FilterSelect
             label='scope'
             value={filters.scope}
             onChange={(scope) => onFiltersChange({ scope })}
             options={scopeOptions}
-            className='bg-transparent border-gray-light-300 dark:border-gray-dark-700'
           />
           <div className='ml-auto'>
             <FilterSelect
@@ -65,7 +61,6 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
               value={String(filters.limit)}
               onChange={(limit) => onFiltersChange({ limit: Number(limit) })}
               options={limitOptions}
-              className='bg-transparent border-gray-light-300 dark:border-gray-dark-700'
             />
           </div>
         </div>
@@ -73,12 +68,12 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
         {/* Active filter badges */}
         {hasActiveFilters && (
           <div className='flex items-center gap-2 flex-wrap pt-0.5'>
-            <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>Active:</span>
+            <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>Active:</span>
             {filters.project && (
               <button
                 type='button'
                 onClick={() => onFiltersChange({ project: '' })}
-                className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
+                className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
               >
                 project: {filters.project} ✕
               </button>
@@ -87,7 +82,7 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
               <button
                 type='button'
                 onClick={() => onFiltersChange({ type: '' })}
-                className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
+                className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
               >
                 type: {filters.type} ✕
               </button>
@@ -96,7 +91,7 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
               <button
                 type='button'
                 onClick={() => onFiltersChange({ scope: '' })}
-                className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
+                className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
               >
                 scope: {filters.scope} ✕
               </button>
@@ -104,7 +99,7 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
             <button
               type='button'
               onClick={() => onFiltersChange({ project: '', type: '', scope: '' })}
-              className='text-[11px] font-mono text-accent hover:underline ml-1'
+              className='text-[11px] text-accent hover:underline ml-1'
             >
               Clear all
             </button>
@@ -114,7 +109,7 @@ const MemoriesTab: FC<MemoriesTabProps> = ({ observations, filters, onFiltersCha
 
       {/* ── Results count ── */}
       {!isLoading && (
-        <p className='text-[11px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+        <p className='text-[11px] text-gray-light-500 dark:text-gray-dark-300'>
           {observations.length} result{observations.length !== 1 ? 's' : ''}
           {filters.query ? ` for "${filters.query}"` : ''}
         </p>

@@ -23,13 +23,13 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
       <div className='flex flex-col gap-2'>
         {/* Row 1: agent + project badges */}
         <div className='w-full flex items-center justify-between gap-1.5'>
-          <span className='inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border bg-accent/10 text-accent border-accent/30 min-w-0 max-w-[55%]'>
+          <span className='inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] border bg-accent/10 text-accent border-accent/30 min-w-0 max-w-[55%]'>
             <Bot size={9} className='shrink-0' />
             <span className='truncate'>{s.agentName}</span>
           </span>
           <span
             className={cn(
-              'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border min-w-0 max-w-[40%]',
+              'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] border min-w-0 max-w-[40%]',
               projectColor(s.project, allProjects)
             )}
           >
@@ -41,7 +41,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
         {/* Row 2: latest title */}
         <p
           className={cn(
-            'text-[13px] font-mono leading-snug line-clamp-2',
+            'text-[13px] leading-snug line-clamp-2',
             s.latestTitle ? 'text-text-light dark:text-text-dark' : 'text-gray-light-400 dark:text-gray-dark-300 italic'
           )}
         >
@@ -55,9 +55,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
               <TypeBadge key={t} type={t} />
             ))}
             {s.types.length > 4 && (
-              <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
-                +{s.types.length - 4}
-              </span>
+              <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>+{s.types.length - 4}</span>
             )}
           </div>
         )}
@@ -66,7 +64,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
       {/* ── Bottom section ── */}
       <div className='flex flex-col gap-1.5'>
         {/* topic_key */}
-        <p className='text-[10px] font-mono truncate text-gray-light-500 dark:text-gray-dark-300'>
+        <p className='text-[10px] truncate text-gray-light-500 dark:text-gray-dark-300'>
           {s.topicKey ? (
             <span className='inline-flex items-center gap-1'>
               <Tag size={9} className='text-gray-light-400 dark:text-gray-dark-300 shrink-0' />
@@ -78,12 +76,12 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
         </p>
         {/* time + obs count */}
         <div className='flex items-center justify-between gap-2'>
-          <span className='text-[10px] font-mono text-gray-light-500 dark:text-gray-dark-300'>
+          <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
             {timeAgo(s.date)}
             <span className='text-gray-light-400 dark:text-gray-dark-300 mx-1'>·</span>
             {new Date(s.date).toLocaleDateString()}
           </span>
-          <span className='inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border bg-gray-light-200 dark:bg-gray-dark-700 border-gray-light-400 dark:border-gray-dark-400 text-gray-light-600 dark:text-gray-dark-300 shrink-0'>
+          <span className='inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border bg-gray-light-200 dark:bg-gray-dark-700 border-gray-light-400 dark:border-gray-dark-400 text-gray-light-600 dark:text-gray-dark-300 shrink-0'>
             <Layers size={9} />
             {s.observationCount}
           </span>
