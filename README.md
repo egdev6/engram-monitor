@@ -141,24 +141,26 @@ The project follows **Atomic Design** with a container/presentational split for 
 src/
 ├── app/                    # Entry point, router, providers
 ├── components/
-│   ├── atoms/              # BackButton, EmptyState, FilterSelect, IconButton,
-│   │                       # SearchInput, StatCard, Text, TypeBadge
+│   ├── atoms/              # BackButton, Button, DateInput, EmptyState, FilterSelect,
+│   │                       # IconButton, SearchInput, StatCard, Text, TypeBadge
 │   ├── molecules/          # ClearFiltersBar, MarkdownPanel, ObservationRow, TabBar
 │   ├── organisms/          # EmptySessionsTab, Footer, Header, MemoriesTab,
-│   │                       # PromptsTab, SessionCard, SessionDetailCard,
-│   │                       # SessionsTab
+│   │                       # MergeProjectsModal, PromptsTab, SessionCard,
+│   │                       # SessionDetailCard, SessionsTab, SettingsModal,
+│   │                       # TimelineTab, TopicsTab
 │   └── templates/          # Layout
 ├── config/                 # Axios instances, React Query client
-├── hooks/                  # use-engram, use-theme, use-loading
+├── hooks/                  # use-engram, use-settings, use-theme, use-loading
 ├── models/                 # TypeScript interfaces for Engram domain types
 ├── pages/
-│   ├── engram-dashboard/   # Main dashboard (Sessions, Memories, Prompts, Empty tabs)
+│   ├── engram-dashboard/   # Main dashboard (Sessions, Memories, Prompts, Topics,
+│   │                       # Timeline, Empty Sessions tabs)
 │   └── session-detail/     # Session drill-down with observation list
 ├── services/               # All Engram API calls (engramService)
 ├── styles/                 # Global CSS: base, theme tokens, fonts, utilities
 └── utils/
-    ├── constants/          # TYPE_COLORS, PROJECT_COLORS, INPUT_CLS
-    └── helpers/            # timeAgo(), projectColor()
+    ├── constants/          # TYPE_COLORS, PROJECT_COLORS, INPUT_CLS, KNOWN_TYPES
+    └── helpers/            # timeAgo(), projectColor(), cn()
 ```
 
 **Key concepts:**
@@ -166,7 +168,8 @@ src/
 - **API proxy** — Vite proxies `/engram-api` → `http://127.0.0.1:7437` in dev. All calls use the `engramApi` Axios instance.
 - **Session derivation** — Active sessions (with observations) are derived client-side by grouping observations by `session_id`. Empty sessions are fetched directly from the `GET /sessions` endpoint.
 - **Data fetching** — Services wrap raw API calls. Hooks compose services with TanStack Query and expose clean interfaces to components.
-- **Global state** — Zustand for UI state (theme, loading overlay). TanStack Query for all server state.
+- **Global state** — Zustand for UI state (theme, settings modal, loading overlay). TanStack Query for all server state.
+- **Atomic components** — Reusable atoms (Button, DateInput) follow consistent patterns with typed props, variants, and sizes.
 
 **Path aliases** (defined in `vite.config.ts`):
 
@@ -196,15 +199,36 @@ src/
 
 <div id="features">
 
+### Core Views
+
 - **Sessions tab** — grid view of all agent sessions with agent name, project, type badges, latest title, topic key, and date. Filterable by project, type, and date range.
-- **Memories tab** — grid view of individual observations. Filterable by project, type, scope, and limit. Click any row to open a Markdown detail panel.
+- **Memories tab** — grid view of individual observations. Filterable by project, type, scope, and limit with active filter badges. Click any row to open a Markdown detail panel with inline editing.
+- **Topics tab** — grouped view of observations organized by `topic_key`. Expandable groups show observation timeline with revision counts. Filterable by project and search.
+- **Timeline tab** — chronological view of all observations grouped by day (Today, Yesterday, or formatted date). Filterable by project, type, and search with visual timeline dots colored by observation type.
 - **Prompts tab** — list of saved user prompts with inline search and per-row delete.
 - **Empty sessions tab** — dedicated list of sessions with no observations, with inline search and per-row delete to clean up stale entries.
+
+### Navigation & UI
+
 - **Session detail** — drill into a session to see all its observations in order, with inline search and type filtering.
+- **Settings modal** — centralized configuration panel accessible from header with Export JSON, Import JSON, and Merge Projects actions.
+- **Responsive tabs** — horizontal scrollable tab bar on mobile with scroll-snap and hidden scrollbar.
 - **Live health indicator** — header shows online/offline status with auto-polling every 2 seconds.
 - **Stats bar** — projects, sessions, observations, prompts, and empty session counts at a glance.
+
+### Data Management
+
+- **Markdown panel** — full observation detail viewer with inline editing support for title, content, type, scope, and topic_key fields.
+- **Merge projects** — dedicated modal to merge observations from one project into another with confirmation flow.
 - **Delete support** — delete individual prompts or empty sessions directly from the dashboard.
-- **Dark theme** — dark-only UI with Geist font and a magenta accent.
+- **Export/Import** — export all data as JSON or import from a JSON file to restore/migrate observations.
+
+### Design System
+
+- **Unified typography** — Geist (sans-serif) used consistently throughout the entire app.
+- **Light & dark themes** — full theme toggle support with persistent storage and automatic system preference detection.
+- **Atomic design** — reusable components (Button, DateInput, FilterSelect) with consistent API and variants.
+- **Accessible** — proper ARIA labels, keyboard navigation (Esc to close modals/panels), and semantic HTML.
 
 </div>
 
