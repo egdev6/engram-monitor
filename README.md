@@ -9,12 +9,12 @@
 </div>
 
 # Engram Monitor
-
-<img src='/public/images/monitor.png'>
+<img width="2172" height="724" alt="ChatGPT Image 25 abr 2026, 04_18_54" src="https://github.com/user-attachments/assets/1a819b65-594e-4583-ab30-63d281b11bd2" />
 
 A single-page dashboard for monitoring and exploring observations stored by the [Engram](https://github.com/egdev6/engram) memory service. Search, browse, and manage AI agent sessions, observations, prompts, and stats from a local Engram HTTP server.
 
 ---
+
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -29,6 +29,12 @@ A single-page dashboard for monitoring and exploring observations stored by the 
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
+
+---
+
+## Screenshot
+
+<img src='/public/images/monitor.png'>
 
 ---
 
