@@ -11,7 +11,8 @@
 # Engram Monitor
 
 
-<img width="2172" height="724" alt="ChatGPT Image 25 abr 2026, 04_18_54" src="https://github.com/user-attachments/assets/8abaf3fa-2e05-4601-9deb-df42fd90aa27" />
+<img width="2135" height="736" alt="ChatGPT Image 25 abr 2026, 04_23_59" src="https://github.com/user-attachments/assets/2c6cb630-4c60-4dea-8d67-f730fe77c043" />
+
 
 
 A single-page dashboard for monitoring and exploring observations stored by the [Engram](https://github.com/egdev6/engram) memory service. Search, browse, and manage AI agent sessions, observations, prompts, and stats from a local Engram HTTP server.
