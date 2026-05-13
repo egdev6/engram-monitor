@@ -28,7 +28,7 @@ dist-ssr
 
 package-lock.json
 pnpm-lock.yaml
-*-workspace
+*-workspace.yaml
 
 *storybook.log
 
@@ -37,3 +37,4 @@ pnpm-lock.yaml
 
 # Agent Teams local configuration
 .agent-teams/
+
