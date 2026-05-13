@@ -1,7 +1,7 @@
 {
   "name": "engram-monitor",
   "private": false,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev:engram": "wait-on -t 2000 http://127.0.0.1:7437/health || engram serve",
@@ -11,6 +11,8 @@
     "preview": "vite preview",
     "optimize": "vite optimize",
     "analyze": "vite build --mode production --reportCompressedSize",
+    "release:prepare": "node --input-type=module -e \"import { pathToFileURL } from 'node:url'; import path from 'node:path'; const root = process.env.INIT_CWD || process.cwd(); const forwardedArgs = process.argv.slice(1); process.argv = [process.argv[0], 'release:prepare', ...forwardedArgs]; process.chdir(root); await import(pathToFileURL(path.join(root, 'scripts/release/prepare-release.mjs')).href);\"",
+    "release:notes": "node --input-type=module -e \"import { pathToFileURL } from 'node:url'; import path from 'node:path'; const root = process.env.INIT_CWD || process.cwd(); const forwardedArgs = process.argv.slice(1); process.argv = [process.argv[0], 'release:notes', ...forwardedArgs]; process.chdir(root); await import(pathToFileURL(path.join(root, 'scripts/release/generate-release-notes.mjs')).href);\"",
     "clean": "node -e \"if (process.platform === 'win32') { require('child_process').execSync('pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean.ps1', {stdio: 'inherit'}); } else { require('child_process').execSync('rm -rf dist node_modules pnpm-lock.yaml package-lock.json && npm cache clean --force', {stdio: 'inherit'}); }\"",
     "reinstall": "pnpm run clean && pnpm install",
     "prepare": "lefthook install",

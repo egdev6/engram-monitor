@@ -38,3 +38,6 @@ pnpm-lock.yaml
 # Agent Teams local configuration
 .agent-teams/
 
+# Agent registry / local orchestration cache
+.atl/
+skills/
