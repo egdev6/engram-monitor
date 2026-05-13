@@ -1,7 +1,7 @@
 import { useEngramHealth } from '@hooks/use-engram';
-//import { useSettingsStore } from '@hooks/use-settings';
+import { useSettingsStore } from '@hooks/use-settings';
 import { useThemeStore } from '@hooks/use-theme';
-import { Moon, /*Settings,*/ Sun, Wifi, WifiOff } from 'lucide-react';
+import { Moon, Settings, Sun, Wifi, WifiOff } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 import { cn } from 'tailwind-variants';
 
@@ -11,7 +11,7 @@ const Header: FC = () => {
   const { data: health } = useEngramHealth();
   const theme = useThemeStore((state) => state.theme);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
-  //const openSettings = useSettingsStore((state) => state.openSettings);
+  const openSettings = useSettingsStore((state) => state.openSettings);
 
   useEffect(() => {
     if (health?.status === 'ok') {
@@ -38,7 +38,7 @@ const Header: FC = () => {
         </p>
       </div>
       <div className='flex items-center gap-3'>
-        {/*<button
+        <button
           type='button'
           onClick={openSettings}
           className='flex items-center justify-center w-8 h-8 rounded-full border border-gray-light-300 dark:border-gray-dark-700 text-gray-light-700 dark:text-gray-dark-300 hover:bg-gray-light-200 dark:hover:bg-gray-dark-800 transition-colors cursor-pointer'
@@ -46,7 +46,7 @@ const Header: FC = () => {
           aria-label='Settings'
         >
           <Settings size={14} strokeWidth={1.5} aria-hidden='true' />
-        </button>*/}
+        </button>
         <button
           type='button'
           onClick={toggleTheme}

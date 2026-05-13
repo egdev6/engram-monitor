@@ -9,7 +9,7 @@ import { SessionsTab } from '@organisms/sessions-tab';
 import { SettingsModal } from '@organisms/settings-modal';
 import { TimelineTab } from '@organisms/timeline-tab';
 import { TopicsTab } from '@organisms/topics-tab';
-import { type FC, useMemo, useRef, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import type { EngramDashboardViewProps } from './types';
 
 type Tab = 'sessions' | 'memories' | 'topics' | 'timeline' | 'prompts' | 'empty';
@@ -38,7 +38,6 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
   isMergingProjects
 }) => {
   const [tab, setTab] = useState<Tab>('sessions');
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showMerge, setShowMerge] = useState(false);
   const isSettingsOpen = useSettingsStore((state) => state.isOpen);
   const closeSettings = useSettingsStore((state) => state.closeSettings);
@@ -72,22 +71,6 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
 
   return (
     <div className='w-full max-w-275 flex flex-col gap-5'>
-      {/* Hidden file input for import */}
-      <input
-        ref={fileInputRef}
-        type='file'
-        accept='.json,application/json'
-        disabled={isImporting}
-        className='hidden'
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file && !isImporting) {
-            onImport(file);
-            e.target.value = '';
-          }
-        }}
-      />
-
       {/* Stats */}
       <div className='grid grid-cols-2 sm:grid-cols-6 gap-2'>
         <StatCard label='Projects' value={derivedStats.projects} loading={isLoadingSessions} />
@@ -164,7 +147,8 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
             setShowMerge(true);
           }}
           showMerge={derivedStats.allProjects.length > 1}
-          fileInputRef={fileInputRef}
+          allObservations={allObservations}
+          prompts={prompts}
         />
       )}
 

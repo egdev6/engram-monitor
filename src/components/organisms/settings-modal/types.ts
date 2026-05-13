@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import type { EngramObservation, EngramPrompt } from '@models/engram';
 
 export interface SettingsModalProps {
   onClose: () => void;
@@ -8,5 +8,6 @@ export interface SettingsModalProps {
   isImporting: boolean;
   onMergeClick: () => void;
   showMerge: boolean;
-  fileInputRef: RefObject<HTMLInputElement | null>;
+  allObservations: EngramObservation[];
+  prompts: EngramPrompt[];
 }
