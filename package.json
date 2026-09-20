@@ -2,6 +2,7 @@
   "name": "engram-monitor",
   "private": false,
   "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev:engram": "wait-on -t 2000 http://127.0.0.1:7437/health || engram serve",

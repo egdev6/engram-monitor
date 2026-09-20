@@ -4,6 +4,12 @@ Todos los cambios importantes de este proyecto se documentan aquí.
 
 ## [Unreleased]
 
+### Added
+- Licencia MIT (`LICENSE`) y campo `license` en `package.json`.
+
+### Fixed
+- Los enlaces a Engram apuntan ahora al repositorio upstream (`Gentleman-Programming/engram`) en vez del fork personal, incluida la ruta de instalación (`.../engram/v2/cmd/engram@latest`).
+
 ## [1.0.0] - 2026-05-13
 ### Added
 - Flujo de release manual con scripts para preparar versión y generar release notes desde el changelog.

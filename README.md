@@ -4,6 +4,7 @@
 
 [![Stars][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+[![License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 </div>
@@ -15,7 +16,7 @@
 
 
 
-A single-page dashboard for monitoring and exploring observations stored by the [Engram](https://github.com/egdev6/engram) memory service. Search, browse, and manage AI agent sessions, observations, prompts, and stats from a local Engram HTTP server.
+A single-page dashboard for monitoring and exploring observations stored by the [Engram](https://github.com/Gentleman-Programming/engram) memory service. Search, browse, and manage AI agent sessions, observations, prompts, and stats from a local Engram HTTP server.
 
 ---
 
@@ -31,6 +32,7 @@ A single-page dashboard for monitoring and exploring observations stored by the 
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#license">License</a></li>
   </ol>
 </details>
 
@@ -71,7 +73,7 @@ A single-page dashboard for monitoring and exploring observations stored by the 
 - **pnpm** `>=9` — `npm install -g pnpm`
 - **Engram** `>= v1.12.0` and running locally on `http://127.0.0.1:7437`
   - The dev script will attempt to start Engram automatically if it is not already running
-  - Install Engram: `go install github.com/egdev6/engram@latest` (or see its own README)
+  - Install Engram: `go install github.com/Gentleman-Programming/engram/v2/cmd/engram@latest` (or see its [installation guide](https://github.com/Gentleman-Programming/engram/blob/main/docs/INSTALLATION.md))
 
 </div>
 
@@ -259,10 +261,21 @@ src/
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
+
+## License
+
+Distributed under the [MIT License][license].
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- MARKDOWN LINKS -->
 [stars-shield]: https://img.shields.io/github/stars/egdev6/engram-monitor.svg?style=for-the-badge
 [stars-url]: https://github.com/egdev6/engram-monitor/stargazers
 [issues-shield]: https://img.shields.io/github/issues/egdev6/engram-monitor.svg?style=for-the-badge
 [issues-url]: https://github.com/egdev6/engram-monitor/issues
+[license-shield]: https://img.shields.io/github/license/egdev6/engram-monitor.svg?style=for-the-badge
+[license-url]: https://github.com/egdev6/engram-monitor/blob/main/LICENSE
+[license]: LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/egdev6
