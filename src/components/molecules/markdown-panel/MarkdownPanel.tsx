@@ -1,6 +1,7 @@
 import { IconButton } from '@atoms/icon-button';
 import { TypeBadge } from '@atoms/type-badge';
 import { INPUT_CLS, KNOWN_TYPES } from '@constants/engram-types';
+import { parseEngramDate } from '@helpers/time';
 import { cn } from '@helpers/utils';
 import { useUpdateObservation } from '@hooks/use-engram';
 import type { EngramObservation, EngramObservationType, EngramObservationUpdate, EngramScope } from '@models/engram';
@@ -225,7 +226,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                 )
               )}
               <span className='text-[11px] text-gray-light-500 dark:text-gray-dark-300'>
-                {new Date(currentObs.created_at).toLocaleString()}
+                {parseEngramDate(currentObs.created_at).toLocaleString()}
               </span>
             </div>
 

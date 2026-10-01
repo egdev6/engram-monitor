@@ -1,4 +1,5 @@
 import { TypeBadge } from '@atoms/type-badge';
+import { parseEngramDate } from '@helpers/time';
 import { cn } from '@helpers/utils';
 import { Calendar, Clock } from 'lucide-react';
 import type { FC } from 'react';
@@ -30,12 +31,12 @@ const ObservationRow: FC<ObservationRowProps> = ({ observation: obs, onClick, sh
         {showTime ? (
           <>
             <Clock size={10} strokeWidth={1.5} />
-            {new Date(obs.created_at).toLocaleTimeString()}
+            {parseEngramDate(obs.created_at).toLocaleTimeString()}
           </>
         ) : (
           <>
             <Calendar size={10} strokeWidth={1.5} />
-            {new Date(obs.created_at).toLocaleDateString()}
+            {parseEngramDate(obs.created_at).toLocaleDateString()}
           </>
         )}
       </span>

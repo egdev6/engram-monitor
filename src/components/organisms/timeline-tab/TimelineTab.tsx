@@ -3,6 +3,7 @@ import { FilterSelect } from '@atoms/filter-select';
 import { SearchInput } from '@atoms/search-input';
 import { TypeBadge } from '@atoms/type-badge';
 import { KNOWN_TYPES, TYPE_COLORS } from '@constants/engram-types';
+import { parseEngramDate } from '@helpers/time';
 import { cn } from '@helpers/utils';
 import type { EngramObservation } from '@models/engram';
 import { MarkdownPanel } from '@molecules/markdown-panel';
@@ -32,7 +33,7 @@ interface DayGroup {
 
 /** Formats an ISO date string to a local YYYY-MM-DD key. */
 function toLocalDateKey(iso: string): string {
-  const d = new Date(iso);
+  const d = parseEngramDate(iso);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
@@ -66,7 +67,7 @@ function formatDate(dateKey: string): string {
 }
 
 function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  return parseEngramDate(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 }
 
 const TimelineTab: FC<TimelineTabProps> = ({ observations, loading, allProjects }) => {

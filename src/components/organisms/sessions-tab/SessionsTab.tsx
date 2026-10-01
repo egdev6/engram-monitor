@@ -3,6 +3,7 @@ import { EmptyState } from '@atoms/empty-state';
 import { FilterSelect } from '@atoms/filter-select';
 import { SearchInput } from '@atoms/search-input';
 import { KNOWN_TYPES } from '@constants/engram-types';
+import { parseEngramDate } from '@helpers/time';
 import { ClearFiltersBar } from '@molecules/clear-filters-bar';
 import { SessionCard } from '@organisms/session-card';
 import { type FC, useMemo, useState } from 'react';
@@ -26,11 +27,11 @@ const SessionsTab: FC<SessionsTabProps> = ({ sessions, loading, allProjects }) =
     }
     if (dateFrom) {
       const from = new Date(dateFrom).getTime();
-      result = result.filter((s) => new Date(s.date).getTime() >= from);
+      result = result.filter((s) => parseEngramDate(s.date).getTime() >= from);
     }
     if (dateTo) {
       const to = new Date(dateTo).getTime() + 86_399_999;
-      result = result.filter((s) => new Date(s.date).getTime() <= to);
+      result = result.filter((s) => parseEngramDate(s.date).getTime() <= to);
     }
     if (search) {
       const q = search.toLowerCase();

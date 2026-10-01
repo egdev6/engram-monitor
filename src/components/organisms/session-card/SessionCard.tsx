@@ -1,5 +1,5 @@
 import { TypeBadge } from '@atoms/type-badge';
-import { projectColor, timeAgo } from '@helpers/time';
+import { parseEngramDate, projectColor, timeAgo } from '@helpers/time';
 import { cn } from '@helpers/utils';
 import { Bot, Folder, Layers, Tag } from 'lucide-react';
 import type { FC } from 'react';
@@ -79,7 +79,7 @@ const SessionCard: FC<SessionCardProps> = ({ session: s, allProjects }) => {
           <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
             {timeAgo(s.date)}
             <span className='text-gray-light-400 dark:text-gray-dark-300 mx-1'>·</span>
-            {new Date(s.date).toLocaleDateString()}
+            {parseEngramDate(s.date).toLocaleDateString()}
           </span>
           <span className='inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border bg-gray-light-200 dark:bg-gray-dark-700 border-gray-light-400 dark:border-gray-dark-400 text-gray-light-600 dark:text-gray-dark-300 shrink-0'>
             <Layers size={9} />

@@ -2,6 +2,7 @@ import { EmptyState } from '@atoms/empty-state';
 import { FilterSelect } from '@atoms/filter-select';
 import { SearchInput } from '@atoms/search-input';
 import { TypeBadge } from '@atoms/type-badge';
+import { parseEngramDate } from '@helpers/time';
 import { cn } from '@helpers/utils';
 import type { EngramObservation, EngramObservationType } from '@models/engram';
 import { MarkdownPanel } from '@molecules/markdown-panel';
@@ -196,7 +197,7 @@ const TopicsTab: FC<TopicsTabProps> = ({ observations, loading, allProjects }) =
                         <div className='flex flex-col gap-0.5 min-w-0 flex-1'>
                           <span className='text-[12px] text-text-light dark:text-text-dark truncate'>{obs.title}</span>
                           <span className='text-[10px] text-gray-light-500 dark:text-gray-dark-300'>
-                            {new Date(obs.created_at).toLocaleString()}
+                            {parseEngramDate(obs.created_at).toLocaleString()}
                           </span>
                         </div>
 
