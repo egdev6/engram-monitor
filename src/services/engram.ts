@@ -11,8 +11,16 @@ import type {
   EngramStats
 } from '@models/engram';
 
-// Common FTS5 tokens broad enough to surface most observations
-const BROAD_TERMS = ['the', 'is', 'to', 'in', 'a', 'of', 'and', 'project', 'agent'];
+// Engram v2 scopes project-aware endpoints to the project of the server's working
+// directory unless the request names a project or sets all_projects. Older versions
+// ignore the parameter.
+// biome-ignore lint/style/useNamingConvention: Engram query parameter
+const ALL_PROJECTS = { all_projects: true } as const;
+
+const projectScope = (project?: string) => (project ? { project } : ALL_PROJECTS);
+
+// Upper bound for the observation list the dashboard derives sessions/topics/timeline from
+const ALL_OBSERVATIONS_LIMIT = 5000;
 
 export const engramService = {
   health: async (): Promise<EngramHealth> => {
@@ -21,18 +29,20 @@ export const engramService = {
   },
 
   stats: async (): Promise<EngramStats> => {
-    const { data } = await engramApi.get<EngramStats>('/stats');
+    const { data } = await engramApi.get<EngramStats>('/stats', { params: ALL_PROJECTS });
     return data;
   },
 
   search: async (params: EngramSearchParams): Promise<EngramObservation[]> => {
-    const { data } = await engramApi.get<EngramObservation[] | null>('/search', { params });
+    const { data } = await engramApi.get<EngramObservation[] | null>('/search', {
+      params: { ...params, ...(params.project ? {} : ALL_PROJECTS) }
+    });
     return data ?? [];
   },
 
   context: async (project?: string): Promise<EngramContext> => {
     const { data } = await engramApi.get<EngramContext>('/context', {
-      params: project ? { project } : undefined
+      params: projectScope(project)
     });
     return data;
   },
@@ -46,26 +56,15 @@ export const engramService = {
     return updated;
   },
 
-  /** Fetches all reachable observations via multiple broad FTS searches and deduplicates. */
+  /**
+   * Fetches observations across all projects, newest first. Uses /observations/recent because
+   * /search caps every response at the server's max search results (20 by default).
+   */
   allObservations: async (): Promise<EngramObservation[]> => {
-    const results = await Promise.allSettled(
-      BROAD_TERMS.map((q) =>
-        engramApi.get<EngramObservation[] | null>('/search', { params: { q, limit: 1000 } }).then((r) => r.data ?? [])
-      )
-    );
-    const seen = new Set<number>();
-    const all: EngramObservation[] = [];
-    for (const r of results) {
-      if (r.status === 'fulfilled') {
-        for (const obs of r.value) {
-          if (!seen.has(obs.id)) {
-            seen.add(obs.id);
-            all.push(obs);
-          }
-        }
-      }
-    }
-    return all;
+    const { data } = await engramApi.get<EngramObservation[] | null>('/observations/recent', {
+      params: { ...ALL_PROJECTS, limit: ALL_OBSERVATIONS_LIMIT }
+    });
+    return data ?? [];
   },
 
   /** Derives sessions from observations grouped by session_id. */
@@ -109,22 +108,10 @@ export const engramService = {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   },
 
-  /** Collects all reachable observation IDs via multiple broad FTS searches. */
+  /** Collects all reachable observation IDs. */
   collectAllIds: async (): Promise<number[]> => {
-    const results = await Promise.allSettled(
-      BROAD_TERMS.map((q) =>
-        engramApi.get<EngramObservation[] | null>('/search', { params: { q, limit: 1000 } }).then((r) => r.data ?? [])
-      )
-    );
-    const ids = new Set<number>();
-    for (const r of results) {
-      if (r.status === 'fulfilled') {
-        for (const obs of r.value) {
-          ids.add(obs.id);
-        }
-      }
-    }
-    return Array.from(ids);
+    const all = await engramService.allObservations();
+    return all.map((obs) => obs.id);
   },
 
   /** Deletes all reachable observations. Returns count of deleted items. */
@@ -137,7 +124,7 @@ export const engramService = {
   /** Fetches ALL sessions from the backend (includes empty ones). */
   recentSessions: async (limit = 500): Promise<EngramSessionSummary[]> => {
     const { data } = await engramApi.get<EngramSessionSummary[]>('/sessions/recent', {
-      params: { limit }
+      params: { ...ALL_PROJECTS, limit }
     });
     return data ?? [];
   },
@@ -145,7 +132,7 @@ export const engramService = {
   /** Fetches recent prompts from the backend. */
   recentPrompts: async (limit = 200): Promise<EngramPrompt[]> => {
     const { data } = await engramApi.get<EngramPrompt[]>('/prompts/recent', {
-      params: { limit }
+      params: { ...ALL_PROJECTS, limit }
     });
     return data ?? [];
   },
@@ -162,7 +149,11 @@ export const engramService = {
 
   /** Exports all Engram data as JSON. */
   exportAll: async (): Promise<Blob> => {
-    const { data } = await engramApi.get<Blob>('/export', { responseType: 'blob', timeout: 0 });
+    const { data } = await engramApi.get<Blob>('/export', {
+      params: ALL_PROJECTS,
+      responseType: 'blob',
+      timeout: 0
+    });
     return data;
   },
 
