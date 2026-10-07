@@ -1,4 +1,5 @@
 import { engramApi } from '@config/engram';
+import { parseEngramDate } from '@helpers/time';
 import type {
   EngramContext,
   EngramHealth,
@@ -105,7 +106,7 @@ export const engramService = {
           observations: sorted
         };
       })
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      .sort((a, b) => parseEngramDate(b.date).getTime() - parseEngramDate(a.date).getTime());
   },
 
   /** Collects all reachable observation IDs. */
