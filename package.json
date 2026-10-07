@@ -9,6 +9,7 @@
     "dev:vite": "wait-on http://127.0.0.1:7437/health && vite",
     "dev": "concurrently --kill-others-on-fail -n engram,vite -c blue,green \"npm run dev:engram\" \"npm run dev:vite\"",
     "build": "tsc && vite build",
+    "test": "node --experimental-strip-types --test src/utils/helpers/time.test.ts",
     "preview": "vite preview",
     "optimize": "vite optimize",
     "analyze": "vite build --mode production --reportCompressedSize",
