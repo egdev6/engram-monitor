@@ -1,7 +1,9 @@
 import { Button } from '@atoms/button';
+import { getStoredAuthToken, setStoredAuthToken } from '@config/engram';
+import { INPUT_CLS } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
 import { type ImportRiskResult, parseImportFile, validateImportRisk } from '@services/import-validation';
-import { Download, GitMerge, Settings, Upload, X } from 'lucide-react';
+import { Check, Download, GitMerge, Key, Settings, Upload, X } from 'lucide-react';
 import { type FC, useEffect, useId, useRef, useState } from 'react';
 import type { SettingsModalProps } from './types';
 
@@ -25,6 +27,15 @@ const SettingsModal: FC<SettingsModalProps> = ({
   const [blockedRisk, setBlockedRisk] = useState<ImportRiskResult | null>(null);
   const [blockedFile, setBlockedFile] = useState<File | null>(null);
   const [blockedFileName, setBlockedFileName] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState(() => getStoredAuthToken());
+  const [tokenSaved, setTokenSaved] = useState(false);
+  const tokenId = useId();
+
+  const handleSaveToken = () => {
+    setStoredAuthToken(authToken);
+    setTokenSaved(true);
+    setTimeout(() => setTokenSaved(false), 2000);
+  };
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -178,6 +189,39 @@ const SettingsModal: FC<SettingsModalProps> = ({
               Merge Projects
             </Button>
           )}
+
+          {/* Server Authentication Token */}
+          <div className='flex flex-col gap-1.5 pt-3 mt-1 border-t border-gray-light-300 dark:border-gray-dark-700'>
+            <label
+              htmlFor={tokenId}
+              className='flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-gray-light-600 dark:text-gray-dark-300 font-medium'
+            >
+              <Key size={12} className='text-accent' />
+              <span>Server Auth Token (ENGRAM_HTTP_TOKEN)</span>
+            </label>
+            <div className='flex items-center gap-2'>
+              <input
+                id={tokenId}
+                type='password'
+                value={authToken}
+                placeholder='Leave empty if no auth'
+                onChange={(e) => setAuthToken(e.target.value)}
+                className={cn(INPUT_CLS, 'py-1.5 text-[11px] font-mono flex-1')}
+              />
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={handleSaveToken}
+                icon={tokenSaved ? Check : undefined}
+                className='text-[11px] px-3'
+              >
+                {tokenSaved ? 'Saved' : 'Save'}
+              </Button>
+            </div>
+            <p className='text-[10px] text-gray-light-500 dark:text-gray-dark-400'>
+              Required if Engram server is protected by ENGRAM_HTTP_TOKEN.
+            </p>
+          </div>
         </div>
       </div>
 

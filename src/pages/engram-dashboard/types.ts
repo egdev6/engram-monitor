@@ -24,4 +24,5 @@ export interface EngramDashboardViewProps {
   isImporting: boolean;
   onMergeProjects: (from: string, to: string, onSuccess: () => void) => void;
   isMergingProjects: boolean;
+  serverVersion?: string;
 }

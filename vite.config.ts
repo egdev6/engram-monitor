@@ -6,6 +6,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   server: {
+    host: true,
     proxy: {
       '/engram-api': {
         target: 'http://127.0.0.1:7437',

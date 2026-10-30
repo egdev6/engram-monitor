@@ -3,6 +3,7 @@ import {
   useDeletePrompt,
   useDeleteSession,
   useEngramExport,
+  useEngramHealth,
   useEngramImport,
   useEngramPrompts,
   useEngramReset,
@@ -11,6 +12,7 @@ import {
   useEngramSessions,
   useMergeProjects
 } from '@hooks/use-engram';
+
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState } from 'react';
@@ -33,7 +35,9 @@ const EngramDashboardPage = () => {
   const { data: sessions = [], isLoading: isLoadingSessions } = useEngramSessions();
   const { data: sessionSummaries = [] } = useEngramSessionSummaries();
   const { data: prompts = [], isLoading: isLoadingPrompts } = useEngramPrompts();
+  const { data: health } = useEngramHealth();
   const resetMutation = useEngramReset();
+
   const deleteSessionMut = useDeleteSession();
   const deletePromptMut = useDeletePrompt();
   const exportMutation = useEngramExport();
@@ -171,6 +175,7 @@ const EngramDashboardPage = () => {
       isImporting={importMutation.isPending}
       onMergeProjects={handleMergeProjects}
       isMergingProjects={mergeProjectsMut.isPending}
+      serverVersion={health?.version}
     />
   );
 };

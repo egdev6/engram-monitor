@@ -1,19 +1,45 @@
 import { Button } from '@atoms/button';
 import { INPUT_CLS } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
-import { ArrowRight, GitMerge, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, Check, Copy, GitMerge, Terminal, X } from 'lucide-react';
 import { type FC, useEffect, useId, useState } from 'react';
 import type { MergeProjectsModalProps } from './types';
 
-const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, isMerging, onClose }) => {
+function isV2OrV3(version?: string): boolean {
+  if (!version) {
+    return true; // Default safe for current releases
+  }
+  const match = version.match(/v?(\d+)/);
+  if (!match) {
+    return true;
+  }
+  const major = Number.parseInt(match[1], 10);
+  return major >= 2;
+}
+
+const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, isMerging, onClose, serverVersion }) => {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [copied, setCopied] = useState(false);
   const titleId = useId();
   const fromId = useId();
   const toId = useId();
 
+  const isModernEngram = isV2OrV3(serverVersion);
   const targetOptions = projects.filter((p) => p !== from);
   const canMerge = Boolean(from && to && from !== to && !isMerging);
+
+  const cliCommand = `engram projects merge --from "${from || '<source>'}" --to "${to || '<target>'}" --apply`;
+
+  const handleCopyCommand = async () => {
+    try {
+      await navigator.clipboard.writeText(cliCommand);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard access blocked — ignore
+    }
+  };
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -90,6 +116,30 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
           Move all observations from one project into another. The source project will be empty after merging.
         </p>
 
+        {isModernEngram && (
+          <div className='flex flex-col gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-[11px] leading-relaxed'>
+            <div className='flex items-center gap-1.5 font-medium'>
+              <AlertCircle size={14} className='shrink-0' />
+              <span>Engram {serverVersion || 'v2/v3'}: HTTP project migration is deprecated</span>
+            </div>
+            <p className='text-[11px] opacity-90'>
+              In modern Engram, merging projects is executed safely via the official CLI. Select projects below to
+              generate the command:
+            </p>
+            <div className='flex items-center justify-between gap-2 p-2 rounded bg-black/10 dark:bg-black/30 font-mono text-[10px] break-all'>
+              <span className='select-all'>{cliCommand}</span>
+              <button
+                type='button'
+                onClick={handleCopyCommand}
+                className='flex items-center gap-1 px-2 py-1 rounded bg-accent/20 hover:bg-accent/30 text-accent font-sans transition-colors shrink-0'
+              >
+                {copied ? <Check size={12} /> : <Copy size={12} />}
+                <span>{copied ? 'Copied' : 'Copy'}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Selectors */}
         <div className='flex items-center gap-3'>
           <div className='flex-1 flex flex-col gap-1'>
@@ -144,11 +194,24 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
         {/* Actions */}
         <div className='flex justify-end gap-2'>
           <Button variant='ghost' size='sm' onClick={onClose} disabled={isMerging}>
-            Cancel
+            Close
           </Button>
-          <Button variant='primary' size='sm' icon={GitMerge} onClick={handleMerge} disabled={!canMerge}>
-            {isMerging ? 'Merging…' : 'Merge'}
-          </Button>
+          {!isModernEngram && (
+            <Button variant='primary' size='sm' icon={GitMerge} onClick={handleMerge} disabled={!canMerge}>
+              {isMerging ? 'Merging…' : 'Merge'}
+            </Button>
+          )}
+          {isModernEngram && (
+            <Button
+              variant='primary'
+              size='sm'
+              icon={copied ? Check : Terminal}
+              onClick={handleCopyCommand}
+              disabled={!canMerge}
+            >
+              {copied ? 'Command Copied' : 'Copy CLI Command'}
+            </Button>
+          )}
         </div>
       </div>
     </>

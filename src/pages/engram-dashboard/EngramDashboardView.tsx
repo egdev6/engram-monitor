@@ -35,7 +35,8 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
   onImport,
   isImporting,
   onMergeProjects,
-  isMergingProjects
+  isMergingProjects,
+  serverVersion
 }) => {
   const [tab, setTab] = useState<Tab>('sessions');
   const [showMerge, setShowMerge] = useState(false);
@@ -156,6 +157,7 @@ export const EngramDashboardView: FC<EngramDashboardViewProps> = ({
       {showMerge && (
         <MergeProjectsModal
           projects={derivedStats.allProjects}
+          serverVersion={serverVersion}
           onMerge={(from, to) => {
             onMergeProjects(from, to, () => {
               setShowMerge(false);

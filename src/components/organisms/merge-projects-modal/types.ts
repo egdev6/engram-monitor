@@ -3,4 +3,5 @@ export interface MergeProjectsModalProps {
   onMerge: (from: string, to: string) => void;
   isMerging: boolean;
   onClose: () => void;
+  serverVersion?: string;
 }
