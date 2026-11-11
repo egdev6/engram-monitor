@@ -1,6 +1,6 @@
 import { IconButton } from '@atoms/icon-button';
 import { TypeBadge } from '@atoms/type-badge';
-import { INPUT_CLS, KNOWN_TYPES } from '@constants/engram-types';
+import { INPUT_CLS, KNOWN_TYPES, SELECT_CLS } from '@constants/engram-types';
 import { parseEngramDate } from '@helpers/time';
 import { cn } from '@helpers/utils';
 import { useUpdateObservation } from '@hooks/use-engram';
@@ -188,7 +188,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                   aria-label='Type'
-                  className={cn(INPUT_CLS, 'py-1 text-[11px]')}
+                  className={cn(SELECT_CLS, 'py-1 text-[11px]')}
                 >
                   {typeOptions.map((t) => (
                     <option key={t} value={t}>
@@ -237,7 +237,7 @@ const MarkdownPanel: FC<MarkdownPanelProps> = ({ observation: initialObs, onClos
                   value={scope}
                   onChange={(e) => setScope(e.target.value)}
                   aria-label='Scope'
-                  className={cn(INPUT_CLS, 'py-1 text-[10px]')}
+                  className={cn(SELECT_CLS, 'py-1 text-[10px]')}
                 >
                   {scopeOptions.map((s) => (
                     <option key={s} value={s}>
