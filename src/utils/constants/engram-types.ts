@@ -11,6 +11,12 @@ export const TYPE_COLORS: Record<string, string> = {
   learning: 'bg-teal/20 text-teal border-teal/30'
 };
 
+// Neutral badge for types without a dedicated color (session_summary, passive, preference, manual...)
+export const FALLBACK_TYPE_COLOR = [
+  'bg-gray-light-300 text-gray-light-800 border-gray-light-500/60',
+  'dark:bg-gray-dark-400/30 dark:text-gray-dark-200 dark:border-gray-dark-500/30'
+].join(' ');
+
 export const PROJECT_COLORS = [
   'bg-blue/15 text-blue border-blue/30',
   'bg-purple/15 text-purple border-purple/30',
@@ -40,3 +46,6 @@ export const INPUT_CLS = [
   'text-text-light dark:text-text-dark placeholder:text-gray-light-600 dark:placeholder:text-gray-dark-300',
   'focus:outline-none focus:border-accent/60 transition-colors'
 ].join(' ');
+
+// Replaces the native arrow so it keeps the same inset as the text padding
+export const SELECT_CLS = `${INPUT_CLS} select-chevron pr-9`;

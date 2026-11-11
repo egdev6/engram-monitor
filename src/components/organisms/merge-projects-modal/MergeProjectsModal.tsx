@@ -1,5 +1,5 @@
 import { Button } from '@atoms/button';
-import { INPUT_CLS } from '@constants/engram-types';
+import { SELECT_CLS } from '@constants/engram-types';
 import { cn } from '@helpers/utils';
 import { ArrowRight, GitMerge, X } from 'lucide-react';
 import { type FC, useEffect, useId, useState } from 'react';
@@ -104,7 +104,7 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               disabled={isMerging}
-              className={cn(INPUT_CLS, 'py-2 w-full', isMerging && 'opacity-50')}
+              className={cn(SELECT_CLS, 'py-2 w-full', isMerging && 'opacity-50')}
             >
               <option value=''>Select source…</option>
               {projects.map((p) => (
@@ -129,7 +129,7 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
               value={to}
               onChange={(e) => setTo(e.target.value)}
               disabled={!from || isMerging}
-              className={cn(INPUT_CLS, 'py-2 w-full', (!from || isMerging) && 'opacity-50')}
+              className={cn(SELECT_CLS, 'py-2 w-full', (!from || isMerging) && 'opacity-50')}
             >
               <option value=''>Select target…</option>
               {targetOptions.map((p) => (
