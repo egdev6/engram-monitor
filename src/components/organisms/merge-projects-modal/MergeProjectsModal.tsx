@@ -58,7 +58,7 @@ const MergeProjectsModal: FC<MergeProjectsModalProps> = ({ projects, onMerge, is
         aria-labelledby={titleId}
         className={cn(
           'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50',
-          'w-full max-w-md p-6 rounded-xl',
+          'w-full max-w-112 p-6 rounded-xl',
           'bg-background-light dark:bg-background-dark',
           'border border-gray-light-300 dark:border-gray-dark-700',
           'shadow-xl flex flex-col gap-5'
