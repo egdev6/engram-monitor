@@ -282,7 +282,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
             aria-modal='true'
             className={cn(
               'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-90',
-              'w-full max-w-lg p-6 rounded-xl',
+              'w-full max-w-[32rem] p-6 rounded-xl',
               'bg-background-light dark:bg-background-dark',
               'border border-red-300 dark:border-red-700',
               'shadow-xl flex flex-col gap-4'
